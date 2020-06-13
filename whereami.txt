@@ -1,0 +1,48 @@
+
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <queue>
+#include <vector>
+#include <map>
+#include <stack>
+#include <cstring>
+#include <string>
+#include <cstdlib>
+#include <cstdio>
+#define cont continue
+#define cin fin
+#define cout fout
+using namespace std;
+int n;
+string s;
+int main() {
+	ifstream fin("whereami.in");
+	ofstream fout("whereami.out");
+	cin >> n;
+	cin >> s;
+	int ans = 0;
+	for (int i = 0; i < s.size(); i++) {
+		vector<string> vec;
+		for (int j = 0; j < s.size() - (i-1); j++) {
+			string temp  (s.begin() + j, s.begin() + i + j);
+			//cout << temp << endl;
+			vec.push_back(temp);
+		}
+		sort(vec.begin(), vec.end());
+		bool works = true;
+		for (int i = 0; i < vec.size() - 1; i++) {
+			if (vec[i] == vec[i + 1]) {
+				works = false;
+			}
+		}
+		if (works) {
+			ans = i;
+			break;
+		}
+	}
+	cout << ans;
+	fin.close();
+	fout.close();
+	return 0;
+}

@@ -1,0 +1,91 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define ll_max 0x3f3f3f3f3f3f
+#define byte_max 0x3f
+#define max_v 2100
+#define cin fin
+#define cout fout
+using namespace std;
+
+ifstream fin("superbull.in");
+ofstream fout("superbull.out");
+
+long long V, arr[max_v];
+long long edges[max_v][max_v];
+long long dist[max_v];
+bool vis[max_v];
+
+long long prim(){//V^2 method since the graph is dense
+	
+	dist[0] = 0;
+	long long total = 0;
+	while(true){
+		int ind = -1;
+
+		for(int i = 0; i<V; i++){
+			if(ind == -1 || dist[i] > dist[ind]){
+				if(vis[i]) cont;
+				ind = i;
+			}
+		}
+		
+		if(ind == -1){
+			break;
+		}
+		
+		total += dist[ind];
+		vis[ind] = true;
+		
+		for(int i = 0; i<V; i++){
+			if(i == ind) cont;
+			dist[i] = max(dist[i], edges[i][ind]);
+		}
+		
+	}
+	
+	return total;
+	
+	
+}
+
+
+int main() {
+  	
+  	
+	cin >> V;
+	
+	for(int i = 0; i<V; i++){
+		cin >> arr[i];
+	}  	
+  	
+  	for(int i = 0; i<V; i++){
+  		for(int j = 0; j<V; j++){
+  			if(i == j) cont;
+			edges[i][j] = (arr[i] ^ arr[j]);		
+		}
+	}
+  	
+  	
+  	cout << prim();
+  	
+  	
+  	return 0;
+}
+
+

@@ -1,0 +1,91 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 1010
+#define mod 1000000007
+#define cin fin
+#define cout fout
+using namespace std;
+ifstream fin("triangles.in");
+ofstream fout("triangles.out");
+map<int, list<int>> X;
+map<int, list<int>> Y;
+vector<pair<int, int>> coor;
+
+long long total = 0;
+
+long long area(int x, int y, int x1, int y1){
+    //printf("%d %d %d %d\n", x, y, x1, y1);
+    return (long long)(abs(x - x1)) * (abs(y - y1));
+}   
+
+
+
+int main() {
+    int n;
+    cin >> n;
+    for(int i = 0; i<n; i++){
+        int s, d;
+        cin >> s >> d;
+        X[s].push_back(d);
+        Y[d].push_back(s);
+        coor.push_back(make_pair(s, d));
+    }
+   
+    for(auto it = X.begin(); it != X.end(); it++){
+        list<int>& L = it->second;
+        L.sort();
+        L.unique();
+    }
+    
+   
+  
+    
+    for(auto it = Y.begin(); it != Y.end(); it++){
+        list<int>& L = it->second;
+        L.sort();
+        L.unique();
+    }
+    
+   
+    
+    
+    for(int i = 0; i<n; i++){
+        int x = coor[i].first;
+        int y = coor[i].second;
+        for(auto itx = X[y].begin(); itx != X[y].end(); itx++){
+            int cur_x = *itx;
+            if(cur_x == x) cont;
+            for(auto ity = Y[x].begin(); ity != Y[x].end(); ity++){
+                int cur_y = *ity;
+                if(cur_y == y) cont;
+                total = (total + area(x, y, cur_x, cur_y)) % mod;
+                
+            }
+        }
+    }
+    
+    cout << total << endl;
+    
+  	return 0;
+}

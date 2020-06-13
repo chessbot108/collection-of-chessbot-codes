@@ -1,0 +1,109 @@
+#include <iostream>
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+#include <vector>
+#include <iomanip>
+#include <bitset>
+#include <string>
+#include <cstring>
+#include <fstream>
+
+#define pow_2(n) (1 << n)
+#define int_max 0x3fffffff
+#define cont continue
+#define N 6
+
+using namespace std;
+
+struct T{
+	double r = 0.0, l = 0.0;
+};
+
+int n;
+bool visited[pow_2(N)];
+double W, w[N], sum[pow_2(N)];
+vector<T> tree[pow_2(N)];
+
+void dfs(int state){
+	//cout << state << endl;
+	if(visited[state]) return;
+	
+	visited[state] = true;
+	
+	
+	bool worked = false;
+	
+	for(int left = (state - 1) & state; left; left = (left-1) & state){ //somehow generates all binary values that share 0's in the same bits as state
+		worked = true;
+		int right = state ^ left; //the other half of the elements	
+		double R = sum[right] / sum[state];
+		double L = sum[left] / sum[state];
+		dfs(left);
+		dfs(right);
+		
+		for(int i = 0; i<tree[left].size(); i++){
+			for(int j = 0; j<tree[right].size(); j++){
+				T Tree;
+				Tree.l = max(tree[left][i].l+ R, tree[right][j].l - L);
+				Tree.r = max(tree[right][j].r + L, tree[left][i].r - R );
+				if(Tree.l + Tree.r < W){
+					tree[state].push_back(Tree);
+				}
+			}
+		}
+		
+		
+		
+	}
+	
+	if(!worked){
+		T Tree;
+		tree[state].push_back(Tree);
+	}
+	
+}
+
+
+
+int main(){
+	int T;
+	cin >> T;
+	for(int o = 0; o<T; o++){
+		cin >> W >> n;
+		memset(visited, false, sizeof(visited));
+		
+		for(int i = 0; i<pow_2(N); i++){
+			tree[i].clear();
+			sum[i] = 0.0;
+		}
+		
+		for(int i = 0; i<n; i++){
+			w[i] = 0.0;
+			cin >> w[i];
+		}
+		
+		for(int i = 0; i<pow_2(n); i++){
+			for(int j = 0; j<n; j++){
+				if(i & pow_2(j)){
+					sum[i] += w[j];
+				}
+			}
+		}
+		
+		int head = pow_2(n) - 1;
+		
+		dfs(head);
+		double maxi = -1.0;
+		for(int i = 0; i<tree[head].size(); i++){
+			maxi = max(maxi, tree[head][i].r + tree[head][i].l);
+		}
+		
+		cout << fixed << setprecision(10) << maxi << endl;
+		
+		
+	}
+	
+	return 0;
+}

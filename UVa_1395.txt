@@ -1,0 +1,143 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 1010
+#define init(arr, n) memset(arr, n, sizeof(arr))
+using namespace std;
+
+class disj_set {
+	int parent[max_v], rank[max_v], n;
+public:
+	disj_set(int n) {
+		this->n = n;
+		make_set();
+	}
+	void make_set() {
+		for (int i = 0; i <= n; i++) {
+			parent[i] = i;
+		}
+	}
+	int find(int index) {
+		if (index != parent[index]) {
+			parent[index] = find(parent[index]);
+		}
+		return parent[index];
+	}
+	void link(int x_rep, int y_rep) {
+		if (rank[x_rep] > rank[y_rep]) {
+			parent[y_rep] = x_rep;
+		}
+		else {
+			parent[x_rep] = y_rep;
+			if (rank[x_rep] == rank[y_rep]) {
+				rank[y_rep]++;
+			}
+		}
+		
+	}
+	void Union(int x, int y) {
+		int x_rep = find(x);
+		int y_rep = find(y);
+		link(x_rep, y_rep);
+	}
+};
+
+set<int> S;
+vector<pair<int, pair<int, int>>> edges;
+vector<int> sol;
+int V, E;
+
+int kruskal(int low){
+	
+	disj_set D(V);
+	
+	int maxi = -1;
+	
+	for(auto cur : edges){
+		int w = cur.first;
+		int u = cur.second.first;
+		int v = cur.second.second;
+		if(w < low) cont;
+		if(D.find(u) != D.find(v)){
+			maxi = max(maxi, abs(low - w));
+			D.Union(u, v);
+		}
+	}
+	
+	for(int i = 1; i<=V; i++){
+		if(D.find(i) != D.find(1)){
+			maxi = -1;
+			break;
+		}
+	}
+	
+	return maxi;
+	
+}
+
+
+int main() {
+  	
+  	while(cin >> V >> E){
+  		if(V + E == 0) break;
+  		
+  		S.clear();
+  		edges.clear();
+  		S.insert(0);
+  		sol.clear();
+  		
+  		for(int i = 0; i<E; i++){
+  			int s, d, w;
+			cin >> s >> d >> w;
+			edges.push_back(make_pair(w, make_pair(s, d)));	
+			S.insert(w);
+		}
+  		
+  		sort(edges.begin(), edges.end());
+  		
+  		
+  		for(auto it = S.begin(); it != S.end(); it++){
+  			sol.push_back(kruskal(*it));
+		}
+  		
+  		sort(sol.begin(), sol.end());
+  		
+  		int ans = int_max;
+  		
+  		for(int x : sol){
+  			if(x != -1 && x < ans){
+  				ans = x;
+			}
+		}
+  		
+  		if(ans == int_max){
+  			cout << -1 << endl;
+		}else{
+		  	cout << ans << endl;
+		}
+  		
+	}
+  	
+  	
+  	return 0;
+}

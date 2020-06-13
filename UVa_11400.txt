@@ -1,0 +1,75 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+#include <ctime>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 1010
+#define pow_2(n) (1 << n)
+#define init(arr, val) memset(arr, val, sizeof(arr))
+
+
+#define voltage first.first
+#define source first.second
+#define cost second.first
+#define count second.second
+
+
+using namespace std;
+
+vector<pair<pair<long long, long long>, pair<long long, long long>>> lamps;
+long long prefix[max_v], dp[max_v];
+
+int main() {
+  	
+  	int n;
+  	while(scanf("%d", &n)){
+  		if(n == 0) break;
+		lamps.clear();
+  		init(dp, byte_max);
+  		init(prefix, 0);
+  		
+  		for(int i = 0; i<n; i++){
+  			long long a, b, c, d;
+			scanf("%lld%lld%lld%lld", &a, &b, &c, &d);
+			lamps.push_back(make_pair(make_pair(a, b), make_pair(c, d)));
+		}	
+		
+		sort(lamps.begin(), lamps.end());
+		
+		for(int i = 0; i<n; i++){
+			prefix[i+1] = prefix[i] + lamps[i].count; 
+		}
+		
+		dp[0] = 0;
+		for(int i = 1; i<=n; i++){
+			for(int j = 0; j<i; j++){
+				dp[i] = min(dp[i], dp[j] + lamps[i-1].source + (lamps[i-1].cost * (prefix[i] - prefix[j])));
+			}
+		}
+		
+		printf("%lld\n", dp[n]);
+		
+	}
+  	
+  	
+  	return 0;
+}
