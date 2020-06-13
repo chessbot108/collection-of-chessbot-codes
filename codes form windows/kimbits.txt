@@ -1,0 +1,96 @@
+/**
+NAME: weiming2
+LANG: C++14
+TASK: kimbits
+**/
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 40
+
+#define cin fin
+#define cout fout
+using namespace std;
+
+ifstream fin("kimbits.in");
+ofstream fout("kimbits.out");
+
+
+/**
+subtasks: 1. compute dp[][]
+		  2. 'binary search' for I
+**/
+
+//dp equation
+//dp[i][j] -> is the number of ways to arrange j bits in a i letter 'word'
+//dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j]			
+//				new combos		old combos
+
+
+long long dp[max_v][max_v];
+
+void comp(){
+	
+	
+	for(int i = 0; i<32; i++){
+		dp[0][i] = 1;
+	}
+	
+	
+	for(int i = 1; i<=33; i++){
+		for(int j = 0; j <= 32; j++){
+			if(j == 0) dp[i][j] = 1;
+			else dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+		}
+	}
+	
+	
+	
+}
+
+void print(int N, int L, long long I){
+	if(N == 0) return;
+	
+	long long cur = dp[N - 1][L];
+	if(cur <= I){
+		cout << 1;
+		print(--N, --L, I - cur);
+	}else{
+		cout << 0;
+		print(--N, L, I);
+	}
+	
+}
+
+int main() {
+  	
+  	int N, L;
+	long long I;
+  	cin >> N >> L >> I;
+  	
+  	comp();
+  	
+  	
+  	print(N, L, I - 1);
+  	cout << endl;
+  	
+  	return 0;
+}
+
+

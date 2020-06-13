@@ -1,0 +1,62 @@
+/**
+
+NAME: weiming2
+LANG: C++14
+TASK: runround
+
+**/
+#include <iostream>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <fstream>
+#include <map>
+
+#define int_max 0x3fffffff
+#define cont continue
+#define cin fin
+#define cout fout
+using namespace std;
+
+bool un[11];
+bool run(int n){
+    string arr = std::to_string(n);
+    memset(un, false, sizeof(un));
+    for(int i = 0; i<arr.size(); i++){
+        if(un[arr[i] - '0']) return false;
+        un[arr[i] - '0'] = true;   
+    }
+    int cur = 0;
+    for(int i = 0; i<arr.size(); i++){
+        char& a = arr[cur];
+        //printf("%c is at index %d\n", a, cur);
+        if(a == '0') return false;
+        cur = (cur + int(a - '0'))%arr.size();
+        a = '0';
+        
+    }
+    
+    return (cur == 0);
+}
+
+
+int main() {
+    ifstream fin("runround.in");
+    ofstream fout("runround.out");
+    int n;
+    cin >> n;
+    n++;
+    while(!run(n)){
+        n++;
+    }
+    
+    cout << n << '\n';
+    
+    
+    
+    return 0;
+}

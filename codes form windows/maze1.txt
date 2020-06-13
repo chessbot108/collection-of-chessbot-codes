@@ -1,0 +1,130 @@
+/**
+NAME: weiming2
+LANG: C++14
+TASK: maze1
+**/
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_r 210
+#define max_c 80
+#define cin fin
+#define cout fout
+
+using namespace std;
+
+ifstream fin("maze1.in");
+ofstream fout("maze1.out");
+
+const int row[] = {0, 0, 1, -1};
+const int col[] = {1, -1, 0, 0};
+
+char MAP[max_r][max_r];
+int DIST[max_r][max_r]; //converting is annyoing. the limits are small so the memory difference is small
+bool vis[max_r][max_r];
+int n, m;
+
+struct node{
+	int x;
+	int y;
+	int layer;
+};
+
+void print(){
+	//cout << "\n\n";
+	for(int i = 0; i<n*2 + 1; i++){
+    	for(int j = 0; j<m*2 + 1; j++){
+    //		printf("%11d", DIST[i][j]);	
+		}
+	//	cout << endl;
+	}
+	//cout << "\n\n";
+}
+
+void bfs(int x, int y){
+	node src = {x, y, 1};
+	queue<node> Q;
+	Q.push(src);
+	while(!Q.empty()){
+		node cur = Q.front();
+
+		Q.pop();
+		
+		if(cur.x < 0 || cur.y < 0 || cur.x >= n*2 + 1 || cur.y >= m*2 + 1 || vis[cur.x][cur.y] || MAP[cur.x][cur.y] != ' '){
+			cont;
+		}
+		//printf("%d %d %d\n", cur.x, cur.y, cur.layer);
+		DIST[cur.x][cur.y] = min(cur.layer, DIST[cur.x][cur.y]);
+		vis[cur.x][cur.y] = true;
+		for(int i = 0; i<4; i++){
+			node a = {cur.x + row[i], cur.y + col[i], cur.layer+1};
+			if(!vis[a.x][a.y])
+				Q.push(a);
+		}
+		
+		
+	}
+}
+
+
+
+int main() {
+	
+	vector<pair<int, int>> entr;
+	
+    cin >> m >> n;
+    
+    for(int i = 0; i<n*2 + 1; i++){
+    	for(int j = 0; j<m*2 + 1; j++){
+    		cin >> noskipws>> MAP[i][j];
+    		if(MAP[i][j] == '\n'){
+    			cin >> noskipws >> MAP[i][j];
+    		}
+			if(((i == 0 || i == n*2) && MAP[i][j] == ' ') || ((j == 0 || j == m*2) && MAP[i][j] == ' ')){
+    			entr.push_back(make_pair(i, j));
+			}	
+		}
+	}
+	
+	
+	
+	memset(DIST, byte_max, sizeof(DIST)); //init everything to inf, 
+	
+	for(pair<int, int> cur : entr){
+		memset(vis, false, sizeof(vis));
+		bfs(cur.first, cur.second);
+	}
+	
+	int maxi = -1;
+	for(int i = 0; i<n*2 +1; i++){
+		for(int j = 0; j<m*2 +1; j++){
+			if(DIST[i][j] != DIST[0][0] && i%2 == 1 && j%2 == 1){
+				maxi = max(maxi, DIST[i][j]);
+			}
+		}
+	}
+	
+	cout << maxi/2 << endl;
+	
+  	return 0;
+}

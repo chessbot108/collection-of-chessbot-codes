@@ -1,0 +1,78 @@
+/*
+ID: weiming2
+TASK: hamming
+LANG: C++
+*/
+//include <iostream>
+#include <fstream>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+#include <cstring>
+#include <iomanip>
+#include <vector>
+#include <bitset>
+#define max_v 170
+#define int_max 0x3fffffff
+#define cont continue
+#define cin fin
+#define cout fout
+
+using namespace std;
+
+ifstream fin("hamming.in");
+ofstream fout("hamming.out");
+const int bit_8 = 0x00000100;
+const int max_int[8] = {1, 3, 7, 15, 31, 63, 127, 255};
+
+
+
+int hamming_dist(int a, int b){
+	//cout << a << ' ' << b;
+	bitset<8> temp = a^b; 
+//	cout << ' ' << temp.count() << '\n';
+	return temp.count();
+}
+
+
+void print_by_10(vector<int> vec, int n){
+	for(int i =0; i<n; i++){
+		if(i % 10 == 9 || i == n-1){
+			cout << vec[i] << endl;
+			cont;
+		}
+		cout << vec[i] << ' ';
+	}
+}
+
+void solve(int n, int b, int d){
+	vector<int> ans;
+	ans.push_back(0); 
+	for(int i = 1; i<=max_int[b]; i++){
+		bool flag = true;
+		for(int j =0; j<ans.size(); j++){
+			flag = (flag && (hamming_dist(i, ans[j]) >= d)); 
+		}
+		if(flag){
+			ans.push_back(i);
+		}
+		
+		if(ans.size() == n){
+			break;
+		}
+	}
+	print_by_10(ans, n);
+}
+
+
+int main()
+{   
+	int n, b, d;
+	cin >> n >> b >> d;
+	solve(n, b, d);
+	
+	
+	return 0;
+}

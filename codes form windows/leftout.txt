@@ -1,0 +1,121 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 1100
+#define cin fin
+#define cout fout
+using namespace std;
+
+ifstream fin("leftout.in");
+ofstream fout("leftout.out");
+
+bool board[max_v][max_v];
+
+int count(int x1, int y1, int x2, int y2, int val){
+	int cnt = 0;
+	for(int i = x1; i<x2; i++){
+		for(int j = y1; j<y2; j++){
+			if(board[i][j] == val){
+				cnt++;
+			}
+		}
+	}
+	//printf("%d %d -> %d %d, %d : %d\n", x1, y1, x2, y2, val,  cnt);
+	return cnt;
+}
+
+
+
+int main() {
+  	
+  	int n;
+  	cin >> n;
+  	for(int i = 0; i<n; i++){
+  		for(int j = 0; j<n; j++){
+  			char c;
+  			cin >> c;
+  			if(c == 'L'){
+  				board[i][j] = 1;	
+			}else{
+				board[i][j] = 0;
+			}
+		}
+	}
+  	
+  	for(int i = 1; i<n; i++){
+  		board[i][0] ^= board[0][0];
+  		for(int j = 1; j<n; j++){
+  			board[i][j] ^= (board[0][j] ^ board[i][0]);	
+  			//cout << board[i][j];
+		}
+		//cout << endl;
+	}
+	
+	if(count(1, 1, n, n, 0) == 0){ //solved
+		cout << "1 1\n";
+		return 0;
+		fout.close();
+	}
+	
+	if(count(1, 1, n, n, 1) == n - 1){ //one row dead
+		
+		for(int i = 1; i<n; i++){
+			if(count(1, i, n, i + 1, 1) == n-1){
+				cout << "1 " << i + 1 << "\n";
+				fout.close();
+				return 0;
+			}
+		}
+		
+		for(int i = 1; i<n; i++){
+			if(count(i, 1, i + 1, n, 1) == n - 1){
+				cout << i + 1 << " 1\n";
+
+				fout.close();
+				return 0;
+			}
+		}
+		
+		
+		
+		fout << "-1\n";
+		return 0;
+	}
+	
+	if(count(1, 1, n, n, 1) != 1){
+		cout << "-1\n";
+		return 0;
+		fout.close();
+	}
+	
+	for(int i = 1; i<n; i++){
+		for(int j = 1; j<n; j++){
+			if(board[i][j] == 1){
+				cout << i + 1 << " " << j + 1 << endl;
+			}
+		}
+	}
+	
+  	
+  	
+  	return 0;
+}
+
+
