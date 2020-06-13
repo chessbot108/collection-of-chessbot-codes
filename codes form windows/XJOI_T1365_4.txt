@@ -1,0 +1,67 @@
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+ 
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 11000
+ 
+using namespace std;
+ 
+set<int> dict;
+int arr[max_v];
+ 
+queue<int> q;
+ 
+int main() {
+    int m, n;
+    cin >> m >> n;
+     
+     
+    for(int i = 0; i<n; i++){
+        cin >> arr[i];  
+    }
+     
+    int cnt = 0;
+     
+    for(int i = 0; i<n; i++){
+        if(dict.count(arr[i])){
+            cont;  
+        }else{
+            cnt++;
+            q.push(arr[i]);
+            dict.insert(arr[i]);
+             
+            if(q.size() > m){
+                int cur = q.front(); q.pop();
+                dict.erase(cur);
+            }
+        }
+         
+         
+    }
+     
+    cout << cnt;
+     
+     
+     
+     
+     
+    return 0;
+}

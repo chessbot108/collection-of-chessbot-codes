@@ -1,0 +1,46 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 1010
+
+using namespace std;
+long long mod;
+
+long long F(long long n, long long m){
+    if (m == 0) return 1;
+
+    long long cur = F((n * n) % mod, m >> 1);
+    
+    if(m&1) cur *= n;
+    
+    return cur % mod;
+    
+    
+}
+
+int main() {
+    long long n, m;
+  	cin >> n >> m >> mod;
+  	cout << F(n, m);
+  	return 0;
+}

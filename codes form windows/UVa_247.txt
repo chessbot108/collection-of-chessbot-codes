@@ -1,0 +1,122 @@
+// xjoi_algoithms.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+#include <iostream>
+#include <queue>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <fstream>
+#include <utility>
+#include <cstring>
+#include <vector>
+#include <climits>
+#define cont continue
+#define int_max 0x3fffffff
+#define max_v 1010
+
+using namespace std;
+int Graph[max_v][max_v];
+int DFN[max_v], Low[max_v];
+bool visited[max_v];
+vector<int> temp;
+map<string, int> HASH;
+vector<string> ID;
+
+int get_id(string a){
+	if(HASH.find(a) != HASH.end()){
+		return HASH[a];
+	}
+	
+	HASH.insert(make_pair(a, ID.size()));
+	ID.push_back(a);
+	return HASH[a];
+}
+
+int V, E, SCC = 0, Index = 0;
+void init_Graph() {
+	for (int i = 0; i < V; i++) {
+		for (int j = 0; j < V; j++) {
+			Graph[i][j] = int_max;
+		}
+	}
+}
+void add_edge(int u, int v, int w) {
+	//cout << u + 1 << " and " << v + 1 << " are connected by an edge of " << w << endl;
+	Graph[u][v] = w;
+}
+int get_edge(int u, int v) {
+	return Graph[u][v];
+}
+
+void tarjan(int u) {
+	DFN[u] = Low[u] = ++Index;
+	visited[u] = true;
+	temp.push_back(u);
+	for (int i = 0; i < V; i++) {
+		if (get_edge( u , i ) != int_max) {
+			//printf("%d and %d are connected by and edge of %d\n", u, i, get_edge( u , i ));
+			if (DFN[i] == 0) {
+				tarjan(i);
+				Low[u] = min(Low[u], Low[i]);
+			}
+			else if(visited[i]){
+				Low[u] = min(Low[u], DFN[i]);
+			}
+		}
+	}
+	if (DFN[u] == Low[u]) {
+		int num = 0;
+		while(true) {
+			int v = temp.back();
+			temp.pop_back();
+			visited[v] = false;
+			
+			if (v == u) {
+				cout << ID[v] << endl;
+				break;
+			}
+			cout << ID[v] << ", ";
+			num++;
+		}
+		if (num != 0) {
+			SCC++;
+		}
+	}
+}
+void solve() {
+	memset(DFN, 0, sizeof(DFN));
+	for (int u = 0; u < V; u++) {
+		if (!DFN[u]) {
+			tarjan(u);
+		}
+	}
+}
+int main()
+{
+	int kase = 0;
+	
+	while(cin >> V >> E){
+		if(V + E == 0) break;
+		temp.clear();
+		ID.clear();
+		HASH.clear();
+		memset(visited, false, sizeof(visited));
+		init_Graph();
+		for (int i = 0; i < E; i++) {
+			string s, d;
+			cin >> s >> d;
+			add_edge(get_id(s), get_id(d), 1);
+			
+		}
+		
+		if(kase) cout << endl;
+		
+		cout << "Calling circles for data set " << ++kase << ":\n";
+		
+		solve();
+		
+	}
+	
+	return 0;
+}
+

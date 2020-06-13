@@ -1,0 +1,76 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <unordered_set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 20
+
+
+using namespace std;
+
+int ind = 0;
+char str[max_v];
+bool taken[max_v];
+
+long long sol;
+bool solved;
+
+bool is_square(double a){
+	return ceil(sqrt(a)) == floor(sqrt(a));
+}
+
+void dfs(long long cur){
+	
+	if(ind == 10){
+		if(is_square(cur)){
+			sol = cur;
+
+			return ;
+		}
+	}
+	
+	for(int i = 0; i<=9; i++){
+		if(!taken[i]){
+			cur *= 10; cur += i;
+			ind++;
+			taken[i] = true;
+			dfs(cur);
+			taken[i] = false;
+			cur /= 10;
+			ind--;
+		}
+	}
+	
+	
+	
+}
+
+
+
+int main() {
+	
+	
+	dfs(0);
+	
+	cout << sol;
+	
+  	return 0;
+}
+
+
