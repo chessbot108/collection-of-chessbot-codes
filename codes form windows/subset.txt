@@ -1,0 +1,60 @@
+/**
+ NAME: weiming2
+ LANG: C++14
+ TASK: subset
+**/
+
+
+
+
+#include <iostream>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <fstream>
+#include <map>
+
+#define int_max 0x3fffffff
+#define cont continue
+#define max_v 40
+#define max_l 900
+#define cin fin
+#define cout fout
+using namespace std;
+
+vector<long long> arr;
+long long dp[max_l]; //dp[i][j] is can i acchieve length j after considering the first i songs
+int main() {
+    ifstream fin("subset.in");
+    ofstream fout("subset.out");
+    for(long long i = 1; i<= 40; i++){
+        arr.push_back(i);   
+    }
+    int n;
+    cin >> n;
+    int tri_num = (n * (n + 1)) / 2;
+    if(tri_num % 2 == 1){
+        cout << "0\n";
+        fout.close();
+    }
+    dp[1] = 1LL;
+    for(int i = 1; i<n; i++){
+        for(int j = tri_num/2 + 10; j >= 0; j--){
+            if(j < arr[i]) cont;
+            dp[j] += dp[j - arr[i]];
+           // printf("%4d", dp[j]);
+        }
+       // cout << endl;
+        
+    }
+    
+    cout << dp[tri_num / 2] << endl;
+    
+    
+    
+    return 0;
+}

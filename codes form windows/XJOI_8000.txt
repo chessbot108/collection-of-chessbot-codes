@@ -1,0 +1,51 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <unordered_set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 20
+
+
+using namespace std;
+
+int dp[max_v];
+int arr[max_v];
+
+int main() {
+	int n;
+	cin >> n;
+	
+	
+	
+	dp[0] = 1;
+	
+	for(int i = 1; i<=n; i++){
+		for(int j = n; j >= 1; j--){
+			if(j < i) cont;
+			dp[j] += dp[j - i];
+			//printf("%d %d: %d\n", i, j, dp[j]);
+		}
+	}
+	
+	cout << dp[n];
+	
+  	return 0;
+}
+
+

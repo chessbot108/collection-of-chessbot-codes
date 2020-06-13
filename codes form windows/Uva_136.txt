@@ -1,0 +1,54 @@
+#include <fstream>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 150
+
+using namespace std;
+
+const long long fac[] = {2L, 3L, 5L};
+set<long long> vis;
+
+
+int main(){
+	priority_queue<long long, vector<long long>, std::greater<long long>> pq; 
+	
+	pq.push(1);
+	vis.insert(1);
+	
+	for(int i = 1; i<1500; i++){
+		long long top = pq.top();
+		pq.pop();
+		
+		
+		for(int j = 0; j<3; j++){
+			if(vis.count(top * fac[j]) == 0){
+				vis.insert(top * fac[j]);
+				pq.push(top * fac[j]);
+			}
+			
+		}
+	}
+	
+	printf("The 1500\'th ugly number is %lld.\n", pq.top());
+		
+	return 0;
+}
+
+

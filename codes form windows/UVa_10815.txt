@@ -1,0 +1,62 @@
+#include <iostream>
+#include <string>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <iomanip>
+#include <map>
+#include <set>
+#include <sstream>
+#include <cctype>
+
+#define int_max 0x3fffffff 
+#define cont continue
+#define max_v 10010
+#define ugly 022 
+
+using namespace std;
+set<string> dict;
+
+
+string process(string a){
+	for(int i = 0; i<a.size(); i++){
+		a[i] = tolower(a[i]);
+		if(a[i] < 'a' || a[i] > 'z'){
+			a[i] = ' ';
+		}
+	}
+	
+	return a;
+	
+}
+
+
+
+
+int main(){
+    string a;
+   	while(cin >> a){
+     		string str = process(a);
+    		str += " 0\n";
+		istringstream iss (str);
+		string b;
+    		while(iss >> b){
+    			if(b == "0"){
+    				break ;
+			}
+			dict.insert(process(b));
+		}
+	}
+	
+	auto it = dict.begin();
+	for(; it != dict.end(); ++it){
+		cout << *it << endl;
+	}
+    
+    return 0;
+}
