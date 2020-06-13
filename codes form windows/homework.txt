@@ -1,0 +1,72 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 110000
+#define pow_2(n) (1 << n)
+
+using namespace std;
+
+
+long long sum[max_v]; //sum of all elements from the back to point i
+long long mini[max_v]; //the min element form back to point i
+long long arr[max_v];
+int n;
+
+FILE *fin = fopen("homework.in", "r");
+FILE *fout = fopen("homework.out", "w");
+	
+
+int main() {
+	
+	fscanf(fin, "%d", &n);
+	//scanf("%d", &n);
+	for(int i = 0; i<n; i++){
+		fscanf(fin, "%lld", &arr[i]);
+		//scanf("%lld", &arr[i]);
+		//cout << arr[i] << endl;
+	}
+	
+	memset(mini, byte_max, sizeof(mini));
+	
+	for(int i = n - 1; i>=0; i--){
+		mini[i] = min(arr[i], mini[i+1]);
+		sum[i] = (sum[i + 1] + arr[i]) - mini[i];
+		//printf("%lld %lld\n", mini[i], sum[i]);
+	}
+	
+	long long best = -1, ind = 1;
+	
+	for(int i = 0; i<n-2; i++){
+		if(best * (n - i - 1) < sum[i + 1] * ind){
+			ind = n - i - 1;
+			best = sum[i + 1];
+		}
+	}
+	
+	for(int i = 0; i<n-2; i++){
+		if(best * (n - i - 1) == sum[i + 1] * ind){
+			fprintf(fout, "%d\n", i + 1);
+			//printf("%d\n", i + 1);
+		}
+	}
+	
+	
+  	return 0;
+}

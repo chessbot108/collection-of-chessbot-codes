@@ -1,0 +1,112 @@
+/**
+NAME: weiming2
+TASK: contact
+LANG: C++14
+**/
+#include <fstream>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 110
+#define cin fin
+#define cout fout
+
+
+using namespace std;
+
+ifstream fin("contact.in");
+ofstream fout("contact.out");
+
+map<string, int> m;
+vector<pair<int, string>> sol;
+string arr;
+int a, b, n;
+
+long long bin(string a){
+	bitset<52> B (a);
+	return B.to_ulong();
+}
+
+inline void add(string a){
+	if(m.find(a) == m.end()){
+		m[a] = 1;
+	}else{
+		m[a]++;
+	}
+}
+
+bool cmp(pair<int, string> a, pair<int, string> b){
+	return (a.first > b.first) || (a.first == b.first && (a.second.size() < b.second.size() || (a.second.size() == b.second.size() && bin(a.second) < bin(b.second))));	
+}
+
+int main(){
+	
+	cin >> a >> b >> n;
+	
+	string t;
+	while(cin >> t){
+		//if(t == "quit") break;
+		arr += t;
+	}
+	
+	for(int l = a - 1; l < b; l++){
+		if(l >= arr.size()) break;
+		string a  (arr.begin() + (arr.size() - 1) - l, arr.end());
+		for(int i = (arr.size() - 1) - l; i > 0; i--){
+			//printf("%d %d ", i, i + l); cout << a << endl;
+			add(a);
+			a.pop_back();
+			a = arr[i - 1] + a;
+		}
+		add(a);
+	}
+	
+	
+	
+	for(auto it = m.begin(); it != m.end(); it++){
+		sol.push_back(make_pair(it->second, it->first));
+	}
+	
+	sort(sol.begin(), sol.end(), cmp);
+	
+	cout << sol[0].first << "\n" + sol[0].second;
+	
+	for(int i = 1, j = 1, k = 1; i < sol.size(); i++){
+
+		if(sol[i].first == sol[i - 1].first){
+			if(k == 6){cout << "\n" << sol[i].second; k = 0;}
+			else cout << " " + sol[i].second;
+			k++;
+		} else { 
+			j++;
+			k = 1;
+			if(j > n) break;
+			
+			cout << endl << sol[i].first << "\n" + sol[i].second;
+		}
+		
+	}
+	
+	cout << endl;
+	
+	return 0;
+}
+
+

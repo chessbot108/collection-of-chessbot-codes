@@ -1,0 +1,58 @@
+
+#include <iostream>
+#include <queue>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <fstream>
+#include <utility>
+#include <vector>
+#include <ctime>
+#include <climits>
+#include <sstream>
+#include <set>
+#include <cstring>
+#include <unordered_map>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define max_v 110000
+#define byte_max 0x3f
+#define cin fin
+#define cout fout
+using namespace std;
+
+ifstream fin("haybales.in");
+ofstream fout("haybales.out");
+
+long long arr[max_v];
+int n;
+
+int main(){
+	int q;
+	cin >> n >> q;
+		
+	for(int i = 0; i<n; i++){
+		cin >> arr[i];
+	}
+	
+	sort(arr, arr + n);
+	
+	while(q--){
+		int l, r;
+		cin >> l >> r;
+		int ind1 = lower_bound(arr, arr + n, l) - &arr[0];
+		int ind2 = lower_bound(arr, arr + n, r) - &arr[0];
+		
+		if(arr[ind2] == r){
+			ind2++;
+		}
+		
+		cout << ind2 - ind1 << endl;
+		
+	}
+	
+	
+	return 0;
+}
+

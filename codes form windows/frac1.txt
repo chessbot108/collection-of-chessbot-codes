@@ -1,0 +1,82 @@
+/*
+ID: weiming2
+PROG: frac1
+LANG: C++
+*/
+//include <iostream>
+#include <fstream>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+#include <cstring>
+#include <iomanip>
+#include <vector>
+#define max_v 170
+#define int_max 0x3fffffff
+#define cont continue
+#define cin fin
+#define cout fout
+using namespace std;
+
+ifstream fin("frac1.in");
+ofstream fout("frac1.out");
+
+struct fract{
+	double num;
+	double den;
+	void print(){
+		cout << num << '/' << den << '\n';
+	}
+	
+};
+
+int gcd(int a, int b){
+	if(a < b) swap(a, b);
+	
+	if(b ==0) return a;
+	else return gcd(b, a%b);
+}
+
+
+
+bool cmp(fract a, fract b){
+	return (a.num/a.den) < (b.num /b.den); 
+}
+
+fract simpl(fract a){
+	int temp = gcd(int(a.num), int(a.den));
+	fract temp2 = {a.num /temp, a.den /temp};
+	return temp2;
+}
+
+
+void solve(int n){
+	vector<fract> vec;
+	for(int i = 1; i<= n; i++){
+    	for(int j = 0; j<=i; j++){
+    		fract a = {j, i};
+    		a = simpl(a);
+    		vec.push_back(a); 
+		}
+	}
+	sort(vec.begin() , vec.end() , cmp);
+	for(int i =0; i<vec.size()-1; i++){
+	//	printf("%lf/%lf and %lf/%lf\n", vec[i].num, vec[i].den, vec[i+1].num, vec[i+1].den);
+		
+	}
+	for(int i =0; i<vec.size(); i++){
+		if(int(vec[i].num) == int(vec[i+1].num) && int(vec[i].den) == int(vec[i+1].den)){
+			cont;
+		}
+		vec[i].print();
+	}
+}
+int main()
+{   
+    int n;
+    cin >> n;
+    solve(n);
+    return 0;
+}

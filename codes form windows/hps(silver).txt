@@ -1,0 +1,86 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 101000
+#define cin fin
+#define cout fout
+
+using namespace std;
+
+ifstream fin("hps.in");
+ofstream fout("hps.out");
+
+int prefix[max_v][4], gest[130];
+int n;
+
+void set_gest(){
+	gest['H'] = 0;
+	gest['P'] = 1;
+	gest['S'] = 2;
+}
+
+int add(int s, int d, int g){
+	return prefix[d][g] - prefix[s][g];
+}
+
+
+int choose_gest(int stop){
+	int maxi = -1;
+	for(int i = 0; i<3; i++){
+		for(int j = 0; j<3; j++){
+			maxi = max(maxi, add(0, stop, i) + add(stop, n, j));
+		}
+	}
+	
+	return maxi;
+}
+
+
+int main() {
+  	
+  	set_gest();
+  	
+  	cin >> n;
+  	for(int i = 1; i<=n; i++){
+  		char c;
+		cin >> c;
+		prefix[i][gest[c]]++;	
+	}
+  	
+  	for(int i = 1; i<=n; i++){
+  		for(int j = 0; j<3; j++){
+  			prefix[i][j] += prefix[i - 1][j];	
+		}
+	}
+  	
+  	int ans = -1;
+  	
+  	for(int i = 1; i<n; i++){
+  		ans = max(ans, choose_gest(i));
+	}
+  	
+  	cout << ans;
+  	
+  	return 0;
+}
+
