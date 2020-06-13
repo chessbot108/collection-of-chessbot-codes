@@ -1,0 +1,59 @@
+#include <iostream>
+#include <stack>
+#include <queue>
+#include <vector>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <utility>
+#include <algorithm>
+#include <fstream>
+#include <iomanip>
+#include <string>
+#include <climits>
+#include <set>
+#include <iterator>
+#include <fstream>
+#include <list>
+ 
+#define int_max 0x3f3f3f3f
+#define cont continue
+#define max_v 540
+#define byte_max 0x3f
+ 
+using namespace std;
+ 
+multiset<int> weights;
+stack<int> q;
+ 
+int main(){
+     
+    //freopen("a_bunch_of_points.in", "r", stdin);
+     
+    int n;
+    scanf("%d", &n);
+    while(n--){
+        int command;
+        scanf("%d", &command);
+        if(command == 0){
+            int temp;
+            scanf("%d", &temp);
+            q.push(temp);
+            weights.insert(temp);
+        }else if(command == 1 && !q.empty()){
+            int temp = q.top();
+            auto it = weights.lower_bound(temp);
+            weights.erase(it);
+            q.pop();
+        }else if(q.empty()){
+            puts("0");
+        }else{
+            printf("%d\n", *(--weights.end()));
+        }
+         
+         
+    }
+     
+     
+    return 0;
+}

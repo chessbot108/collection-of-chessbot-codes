@@ -1,0 +1,90 @@
+#include <fstream>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 10100
+
+using namespace std;
+
+map<set<int>, int> HASH; //set -> id
+vector<set<int>> ID; //id -> set
+
+int get_id(const set<int>& temp){
+	if(HASH.count(temp)){
+		return HASH[temp];
+	}else{
+		ID.push_back(temp);
+		HASH[temp] = ID.size() - 1;
+		return ID.size() - 1;
+	}
+} 
+
+set<int> get_set(int id){
+	return ID[id];
+}
+
+int main(){
+	int T;
+	cin >> T;
+	while(T--){
+		ID.clear();
+		HASH.clear();
+		stack<int> comp;
+		int n;
+		cin >> n;
+		
+		while(n--){
+			string cmd;
+			cin >> cmd;
+			
+			if(cmd == "PUSH"){
+				comp.push(get_id(set<int>())); //empty set
+			}else if(cmd == "DUP"){
+				comp.push(comp.top());
+			}else{
+				
+				set<int> S1 = get_set(comp.top()); comp.pop();
+				set<int> S2 = get_set(comp.top()); comp.pop();
+				set<int> S;
+				if(cmd == "ADD"){
+					S = S2;
+					S.insert(get_id(S1));	
+				}else if(cmd == "UNION"){
+					set_union(S1.begin(), S1.end(), S2.begin(), S2.end(), inserter(S, S.begin()));
+				}else{
+					set_intersection(S1.begin(), S1.end(), S2.begin(), S2.end(), inserter(S, S.begin()));
+				}
+				
+				comp.push(get_id(S));
+				
+			}
+			cout << get_set(comp.top()).size() << endl;
+			
+			
+		}
+		
+		cout << "***\n";
+	}
+	
+		
+	return 0;
+}
+
+

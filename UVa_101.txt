@@ -1,0 +1,130 @@
+#include <fstream>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+
+#define cont continue
+#define max_v 30
+#define int_max 0x7fffffff
+
+#define move "move"
+#define pile "pile"
+#define onto "onto"
+#define over "over"
+#define quit "quit"
+
+
+using namespace std;
+
+map<int, std::list<int>::iterator> arr;
+int belong[max_v];
+list<int> towers[max_v];
+
+void reset(int ind){
+	for(auto it = towers[ind].begin(); it != towers[ind].end(); it++){
+		arr[*it] = it;
+		belong[*it] = ind;
+	}
+}
+
+std::list<int>::iterator get_it(int a){
+	return arr[a];	
+}
+
+int get_tower(int a){
+	return belong[a];
+}
+
+void print(int n){
+	for(int i = 0; i<n; i++){
+		cout << i << ":";
+		for(auto it = towers[i].begin(); it != towers[i].end(); it++){
+			cout << ' ' << *it;
+		}
+		cout << endl;
+	}
+}
+
+void init(int ind, int val){
+	//cout << "while init-ing\n";
+	
+	for(auto it = --towers[ind].end(); *it != val; it--){
+		int cur = *it;
+		towers[cur].push_back(cur);
+		reset(cur);
+	}
+	
+	while(towers[ind].back() != val){
+		towers[ind].pop_back();
+	}
+	reset(ind);
+	//cout << "\n\n\n";
+}
+
+int main(){
+	int n;
+	cin >> n;
+	
+	for(int i = 0; i<=n; i++){
+		towers[i].push_back(i);
+		reset(i);
+	}
+	
+	string cmd, loc;
+	while(cin >> cmd){
+		if(cmd == "quit") break;
+		int a, b;
+		
+		cin >> a >> loc >> b;
+		
+		auto a_it = get_it(a);
+		auto b_it = get_it(b);
+		int t_a = get_tower(a);
+		int t_b = get_tower(b);
+		
+		if(a == b || t_a == t_b) cont;
+		
+		if(cmd == move && loc == onto){
+			init(t_b, b);
+			init(t_a, a);
+			towers[t_b].push_back(a);
+			towers[t_a].pop_back();
+			
+		}else if(cmd == move && loc == over){
+			init(t_a, a);
+			towers[t_b].push_back(a);
+			auto temp = towers[t_a].erase(a_it);
+		}else if(cmd == pile && loc == onto){
+			init(t_b, b);
+			b_it++;
+			towers[t_b].splice(b_it, towers[t_a], a_it, towers[t_a].end());
+		}else {
+			towers[t_b].splice(towers[t_b].end(), towers[t_a], a_it, towers[t_a].end());
+		}
+		
+		reset(t_a);
+		reset(t_b);
+		
+		//print(n);
+		
+		
+	}
+	
+	print(n);
+	
+	return 0;
+}

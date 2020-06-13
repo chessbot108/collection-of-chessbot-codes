@@ -1,0 +1,53 @@
+#include <iostream>
+#include <string>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <iomanip>
+#include <map>
+#include <fstream>
+
+#define int_max 0x3fffffff //practical upper bound
+#define cont continue
+#define max_v 10010
+using namespace std;
+
+
+int dp[max_v], a;
+
+vector<int> arr;
+
+
+void dfs(int cur, int steps){
+    if(cur < 0 || steps > 13 || dp[cur] < steps){
+        return ;   
+    }
+    
+    dp[cur] = min(dp[cur], steps);
+    arr.push_back(cur); 
+    
+    for(int i = 0; i<arr.size(); i++){
+        dfs(cur + arr[i], steps + 1);
+        dfs(cur - arr[i], steps + 1);
+    }
+    
+    arr.pop_back();
+    
+}
+
+int main(){
+    memset(dp, 0x7f, sizeof(dp));
+    dfs(1, 0);
+
+    while(cin >> a){
+    	if(a == 0) break;
+    	cout << dp[a] << endl;
+    }
+  
+    return 0;
+}

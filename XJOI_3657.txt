@@ -1,0 +1,60 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 110
+#define max_e 110
+
+using namespace std;
+
+int arr[max_v][max_v];
+int pre[max_v], cur[max_v];
+	
+
+int main() {
+	int n;
+	cin >> n;
+	for(int i = 0; i<n; i++){
+		for(int j = 0; j<=i; j++){
+			cin >> arr[i][j];
+		}
+	}
+	
+	
+	memcpy(pre, arr[n - 1], sizeof(pre));
+	
+	for(int i = n - 2; i >= 0; i--){
+		
+		for(int j = 0; j <= i; j++){
+			cur[j] = max(pre[j], pre[j + 1]) + arr[i][j];
+		}
+		
+		memcpy(pre, cur, sizeof(cur));
+		
+		
+	}
+	
+	cout << pre[0];
+		
+  	return 0;
+}
+

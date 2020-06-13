@@ -1,0 +1,96 @@
+#include <fstream>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_r 10100
+#define max_c 11
+using namespace std;
+
+hash<string> str_hash;
+long long res[max_r][max_c];
+map<pair<long long, long long>, pair<pair<int, int>, int>> ans;
+
+inline void NO_NEWLINE(){
+	while(getchar() != '\n');
+}
+
+int main(){
+	int r, c;
+	while(cin >> r >> c){
+		NO_NEWLINE();
+		memset(res, 0, sizeof(res));
+		ans.clear();
+		for(int i = 0; i<r; i++){
+			string s;
+
+			getline(cin, s);
+			s += ",";
+			int ind = 0;
+			string temp = "";
+			for(int j = 0; j<c; j++){
+				while(s[ind] != ','){
+					temp += s[ind];
+					ind++;
+				}
+				ind++;
+				res[i][j] = str_hash(temp);
+				//cout << temp + "\n" << ' ' << str_hash(temp) << endl;
+				temp = "";
+				
+			}
+			
+			
+		}
+		
+		bool solved = false;
+		if(r == 1 || c == 1){
+			cout << "YES\n";
+			cont;
+		}
+		pair<int, int> r_, c_;
+		for(int i = 0; i<r && !solved; i++){
+			for(int j = 0; j<c && !solved; j++){
+				for(int k = j + 1; k<c && !solved; k++){
+					pair<long long, long long> cur = make_pair(res[i][j], res[i][k]);
+					if(ans.find(cur) == ans.end()){//cur is not in ans
+						ans[cur] = make_pair(make_pair(j, k), i);
+					}else if(ans[cur].first.first == j && ans[cur].first.second == k){
+						solved = true;
+						r_.first = ans[cur].second + 1;
+						r_.second = i + 1;
+						c_.first = j + 1;
+						c_.second = k + 1;
+						break;
+					}
+				}
+			}
+		}
+		if(!solved){
+			cout << "YES\n";
+		}else{
+			printf("NO\n%d %d\n%d %d\n", r_.first, r_.second, c_.first, c_.second);
+		}
+		
+	}
+	
+	
+		
+	return 0;
+}
+
+

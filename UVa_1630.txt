@@ -1,0 +1,95 @@
+#include <iostream>
+#include <string>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <iomanip>
+#include <map>
+#include <set>
+#include <fstream>
+#include <sstream>
+
+//#define cout fout
+#define cont continue
+#define max_v 110
+
+using namespace std;
+
+//ofstream fout("fout.txt");
+
+string s, dp[max_v][max_v];
+int DIGIT(int n){
+	char buffer[40];
+	sprintf(buffer, "%d", n);
+	return strlen(buffer);
+}
+
+string DP(int l, int r){
+	string &ans = dp[l][r];
+	if(ans.length() > 0) return ans;
+	
+	int n = (r - l) + 1;
+	
+	
+	
+	string cur = s.substr(l, n);
+	ans = cur;
+	for(int len = 1; len<=n/2; len++){
+		string temp = s.substr(l, len);
+		bool works = true;
+		
+		if(n % len != 0) cont;
+		
+		for(int j = l + len; j <= r - len + 1; j += len){
+			if(s.substr(j, len) != temp){
+				works = false;
+				break;
+			}
+		}
+		
+		if(works){
+			string temp2 = to_string(n/len) + "(" + DP(l, l + len - 1) + ")";
+			if(temp2.size() < ans.size()){
+				ans = temp2;
+			}
+		}
+		
+		
+	}
+	
+	for(int i = l; i < r; i++){
+		string temp = DP(l, i) + DP(i + 1, r);
+		if(temp.size() < ans.size()){
+			ans = temp;
+		}
+	}
+	
+	return ans;
+	
+}
+
+
+
+
+
+int main(){
+	
+	while(cin >> s){
+		
+		for(int i = 0; i<max_v; i++){
+			for(int j = 0; j<max_v; j++){
+				dp[i][j] = "";
+			}
+		}
+		
+		cout << DP(0, s.size() - 1) << endl;
+	}
+    
+    
+    return 0;
+}

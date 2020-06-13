@@ -1,0 +1,125 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 130
+
+using namespace std;
+
+struct node{
+	int dist, key;
+	node(int a, int b){
+		dist = a; key = b;
+	}
+	
+	bool operator < (const node& b) const{
+		return dist < b.dist;
+	}
+};
+
+bool graph[max_v][max_v], vis[max_v];
+int dist[max_v], S, D, SP;
+
+bool dijkstra(int src, int dest, int spoons, int extra){
+	memset(dist, 0, sizeof(dist));
+	memset(vis, false ,sizeof(vis));
+	dist[src] = extra;
+	
+	priority_queue<node> pq;
+	pq.push(node(extra, src));
+	
+	while(!pq.empty()){
+		node cur = pq.top(); pq.pop();
+		int key = cur.key;
+		
+		//printf("%d %d %d, %d %d\n", src, dest, extra, key, dist[key]);
+		
+		if(key == dest) return (dist[key] >= 0);
+		if(vis[key] || dist[key] < 0) cont;
+		
+		
+		vis[key] = true;
+		
+		for(int i = 'A'; i<='z'; i++){
+			if(graph[key][i]){
+				int temp = dist[key] - ((i <= 'Z') ? ceil((double)(dist[key] + spoons)/20.0) : 1);
+				
+				if(temp > dist[i] || temp == 0){
+					dist[i] = temp;
+					pq.push(node(temp, i));
+				}
+			}
+		}	
+		
+	}
+	return false;
+}
+
+int bin_search(int l, int r){
+	if(l >= r) return l;
+	int mid = (l+r)/2;
+	
+	if(dijkstra(S, D, SP, mid)){
+		return bin_search(l, mid);
+	}else{
+		return bin_search(mid + 1, r);	
+	}
+	
+}
+
+
+
+int main() {
+  	
+  	int E, kase = 0;
+  	while(cin >> E){
+  		if(E == -1) break;
+  		memset(graph, false, sizeof(graph));
+		  
+		char s, d;
+		int spoons;
+		
+		
+		for(int i = 0; i<E; i++){
+			char a, b;
+			cin >> a >> b;
+			graph[a][b] = true;
+			graph[b][a] = true;
+		}
+			
+  		cin >> spoons >> s >> d;
+		SP = spoons;
+		S = s;
+		D = d;
+		
+		printf("Case %d: %d\n", ++kase, spoons + bin_search(0, 100*spoons));
+		
+	}
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	return 0;
+}

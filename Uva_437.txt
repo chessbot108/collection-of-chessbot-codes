@@ -1,0 +1,126 @@
+#include <fstream>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#define cont continue
+#define int_max 0x3fffffff
+#define max_v 100
+using namespace std;
+int n;
+bool graph[max_v][max_v];
+int dp[max_v];
+bool visited[max_v];
+struct block{
+	int x;
+	int y;
+	int z;
+};
+
+bool cmp(const block& a, const block& b){ //tells me a can be stacked on b
+	return (a.x > b.x && a.y > b.y) || (a.x > b.y && a.y > b.x);
+}
+
+bool cmp2(int a, int b){
+	return a > b;
+}
+vector<block> supply;
+vector<block> sorted_list;
+void comp_graph(){ //makes graph
+	for(int i = 0; i<supply.size(); i++){
+		for(int j = 0; j<supply.size(); j++){
+			graph[i][j] = cmp(supply[i], supply[j]);
+		}
+	}
+}
+
+void sort2(int& x, int& y, int& z){ //use for making blocks in input
+	int temp[] = {x, y, z};
+	sort(temp, temp+3, cmp2);
+	x = temp[0];
+	y = temp[1];
+	z = temp[2];
+	return;
+}
+
+
+void topo_sort(int cur){
+	visited[cur] = true;
+	for(int i = 0; i<supply.size(); i++){
+		if(graph[cur][i] && !visited[i]){
+			topo_sort(i);
+		}
+	}
+	sorted_list.push_back(supply[cur]);
+}
+
+void visit(){ //topologically sort it, recompute 'supply' and 'graph'
+	for(int i = 0; i<supply.size(); i++){
+		if(!visited[i]){
+			topo_sort(i);
+		}
+	}
+	for(int i = supply.size()-1; i >= 0; i--){
+		block c = sorted_list[i];
+		supply[i] = c;
+	}
+	comp_graph();
+}
+
+
+int longest_path(){ //bottom-up code for longest path in DAG
+	visit();
+	for(int i = 0; i < supply.size(); i++){
+		for(int j = 0; j < supply.size(); j++){
+			if(graph[i][j]){			
+				dp[i] = max(dp[i], dp[j] + supply[j].z);
+			}
+		}
+	}
+	int maxi = 0;
+	for(int i = 0; i<supply.size(); i++){
+		maxi = max(maxi, dp[i] + supply[i].z);
+	}
+	return maxi;	
+	
+}
+
+
+int main(){
+	int kase = 1;
+	while(cin >> n){
+		if(n == 0){
+			break;
+		}
+		for(int i = 0; i<n; i++){
+			int x, y, z;
+			cin >> x >> y >> z;
+			sort2(x, y, z);
+			block a = {x, y, z};
+			block b = {z, y, x};
+			block c = {z, x, y};
+			supply.push_back(a);
+			supply.push_back(b);
+			supply.push_back(c);
+		}
+		
+		memset(graph, false, sizeof(graph));
+		memset(dp, 0, sizeof(dp));
+		memset(visited, 0, sizeof(visited));
+		comp_graph();
+		
+		cout << "Case " << kase << ": maximum height = " << longest_path() << endl;
+		kase++;
+		
+		while(!supply.empty()){ //deconstructor 
+			supply.pop_back();
+			sorted_list.pop_back();
+		}
+	}
+	
+	return 0;
+}
