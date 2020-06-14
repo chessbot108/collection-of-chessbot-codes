@@ -1,0 +1,112 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define max_v 11000
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+
+//program specific macros, they help readbility
+#define x first
+#define y second
+
+using namespace std;
+
+typedef pair<int, int> point;
+
+vector<point> points;
+vector<point> hull;
+map<point, int> index;
+
+int n;
+bool used[max_v];
+bool is_left(point a, point b, point c){
+	return ((((b.x - a.x) * (c.y - a.y)) - ((b.y - a.y) * (c.x - a.x))) < 0);
+}
+
+void print(){
+	printf("my hull is:\n");
+	for(point cur : hull){
+		printf("%d %d\n", cur.x, cur.y);
+	}
+	printf("\n\n");
+}
+
+
+int start(){
+	used[0] = true;
+	hull.push_back(points[0]);
+	for(int i = 1; i<points.size()-1; i++){
+		if(is_left(points[0], points[n - 1], points[i])){
+			used[i] = true;
+			hull.push_back(points[i]);
+			return i;
+		}
+	}
+	
+	hull.push_back(points[n - 1]);
+	
+	return n - 1;
+}
+
+void make_convex_hull(){
+	sort(points.begin(), points.end());
+	
+	
+	for(int i = start() + 1; i<n; i++){
+		int j = hull.size() - 1;
+		while(j > 1 && is_left(hull[j - 1], hull[j], points[i])){
+			j--;
+			hull.pop_back();
+			
+		}
+		hull.push_back(points[i]);
+	}
+	
+	for(int i = n - 2; i >= 0; i--){
+		int j = hull.size() - 1;
+		while(j > 0 && is_left(hull[j - 1], hull[j], points[i])){
+			hull.pop_back();
+			j--;
+		}
+		
+		hull.push_back(points[i]);
+	}
+	
+	hull.pop_back(); //i add a duplicate of point[0]
+	
+	
+
+}
+
+int main() {
+	scanf("%d", &n);
+	for(int i = 0; i<n; i++){
+		int a, b;
+		scanf("%d%d", &a, &b);
+		points.push_back(make_pair(a, b));
+		index[make_pair(a, b)] = i;
+	}
+	
+	
+	for(point cur : hull){
+		printf("(%d, %d)\n", cur.x, cur.y);
+	}
+	
+	
+	return 0;
+}

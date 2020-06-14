@@ -1,0 +1,139 @@
+// xjoi_algoithms.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+#include <iostream>
+#include <queue>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <fstream>
+#include <utility>
+#include <vector>
+#include <ctime>
+#include <climits>
+#define cont continue
+#define int_max 0x3fffffff
+#define max_v 110
+using namespace std;
+//store edge info here
+/*
+int Graph[max_v][max_v];
+*/
+///*
+vector<pair<int, int>> edges;
+vector<int> weights;
+int arr[max_v];
+
+//*/
+//methods to help the logic
+void add_edge(int u, int v, int w) {
+	/*
+	Graph[u][v] = w;
+	*/
+	///*
+	edges.push_back(make_pair(u, v));
+	weights.push_back(w);
+	//*/
+}
+
+int get_edge(int u, int v) {
+	/*
+	return Graph[u][v];
+	
+	*/
+		///*
+	for(int i = 0; i<edges.size(); i++){
+		if(edges[i].first == u && edges[i].second == v){
+			return weights[i];
+		}
+	}
+	return int_max;
+	//*/
+}
+class disj_set {
+	int parent[max_v], rank[max_v], n;
+public:
+	disj_set(int n) {
+		this->n = n;
+		make_set();
+	}
+	void make_set() {
+		for (int i = 0; i < n; i++) {
+			parent[i] = i;
+		}
+	}
+	int find(int index) {
+		if (index != parent[index]) {
+			parent[index] = find(parent[index]);
+		}
+		return parent[index];
+	}
+	void link(int x_rep, int y_rep) {
+		if (rank[x_rep] > rank[y_rep]) {
+			parent[y_rep] = x_rep;
+		}
+		else {
+			parent[x_rep] = y_rep;
+			if (rank[x_rep] == rank[y_rep]) {
+				rank[y_rep]++;
+			}
+		}
+
+	}
+	void Union(int x, int y) {
+		int x_rep = find(x);
+		int y_rep = find(y);
+		link(x_rep, y_rep);
+	}
+};
+bool cmp(int i, int j) {
+	if (weights[i] < weights[j]) {
+		return true;
+	}
+	return false;
+}
+void add_node(vector<int>& sol, int u) {
+	for (int i = 0; i < sol.size(); i++) {
+		if (sol[i] == u) {
+			return;
+		}
+	}
+	sol.push_back(u);
+}
+int kruskals(int n, int E, vector<int>& sol){ //returns the head node, sol stores the inorder
+	disj_set sub_trees(n);
+	for (int i = 0; i < E; i++) {
+		arr[i] = i;
+	}
+	sort(arr, arr + n, cmp);
+	for (int i = 0; i < E; i++) {
+		int u = edges[arr[i]].first;
+		int v = edges[arr[i]].second;
+		if (sub_trees.find(u) != sub_trees.find(v)) {
+			add_node(sol, u);
+			add_node(sol, v);
+			sub_trees.Union(u, v);
+		}
+	}
+	return sub_trees.find(0);
+}
+int main()
+{
+	int V, E;
+	cin >> V >> E;
+	for (int i = 0; i < E; i++) {
+		int s, d, w;
+		cin >> s >> d >> w;
+		//1-index -> 0-index
+		s--;
+		d--;
+		add_edge(s, d, w);
+		//add_edge(d, s, w);
+	}
+	vector<int> sol;
+	int head = kruskals(V, E, sol);
+	for (int x : sol) {
+		cout << x+1 << ' ';
+	}
+	return 0;
+}
+

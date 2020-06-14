@@ -1,0 +1,93 @@
+/**
+NAME: weiming2
+LANG: C++14
+TASK: range
+**/
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 260
+
+#define cin fin
+#define cout fout
+using namespace std;
+
+ifstream fin("range.in");
+ofstream fout("range.out");
+
+int prefix[max_v][max_v]; //number of zeroes in the rectangle (0, 0) and (i, j)
+
+
+bool zero_count(int x1, int y1, int x2, int y2){
+	return ((prefix[x1][y1] + prefix[x2][y2]) - (prefix[x1][y2] + prefix[x2][y1]));
+}
+
+
+
+int main() {
+  	
+  	
+  	int n;
+  	cin >> n;
+  	for(int i = 1; i<=n; i++){
+  		for(int j = 1; j<=n; j++){
+  			char temp;
+			cin >> temp;
+			if(temp == '0'){
+				prefix[i][j]++;
+			}
+		}	
+	}
+  	
+  	
+  	for(int i = 1; i<=n; i++){
+  		for(int j = 1; j<=n; j++){
+  			prefix[i][j] += prefix[i - 1][j] + prefix[i][j - 1] - prefix[i - 1][j - 1];
+  		}	
+	}
+  	
+  	vector<pair<int, int>> sol;
+  	
+  	for(int l = 2; l<=n; l++){
+  		int cnt = 0;
+  		for(int i = 0; i <= n - l; i++){
+  			for(int j = 0; j<= n - l; j++){
+  				if(!zero_count(i, j, i + l, j + l)){
+  					cnt++;
+				}
+			}
+		}
+		
+		if(cnt){
+			sol.push_back(make_pair(l, cnt));
+		}
+		
+	}
+  	
+  	sort(sol.begin(), sol.end());
+
+  	for(pair<int, int> cur : sol){
+  		cout << cur.first << " " << cur.second << endl;	
+	}
+  	  	
+  	
+  	return 0;
+}
+
+

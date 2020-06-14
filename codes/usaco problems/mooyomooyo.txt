@@ -1,0 +1,145 @@
+
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <set>
+#include <vector>
+#include <map>
+#include <stack>
+#include <cstring>
+#include <string>
+#include <cstdlib>
+#include <cstdio>
+#define temp_char '!'
+//#define cin fin
+//#define cout fout
+using namespace std;
+
+const int row[] = { 0, 0, -1, 1 };
+const int col[] = { -1, 1, 0, 0 };
+char board[200][10];
+bool visited[200][10];
+int flood = 0;
+int n;
+struct node {
+	int x, y;
+	bool check(char start) {
+		return (x < n) && (x >= 0) && (y < 10) && (y >= 0) && (board[x][y] == start);
+	}
+};
+/*
+void print_board() {
+	cout << endl;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < 10; j++) {
+			cout << board[i][j];
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
+**/
+void floodfill(node src, char start, char res) {
+	flood = 0;
+	stack<node> s;
+	s.push(src);
+	while (!s.empty()) {
+		node cur = s.top();
+		s.pop();
+		if(board[cur.x][cur.y] == start)
+			flood++;
+
+
+		board[cur.x][cur.y] = res;
+		for (int i = 0; i < 4; i++) {
+			node b = { cur.x + row[i], cur.y + col[i] };
+			if (b.check(start)) {
+				s.push(b);
+			}
+		}
+	}
+	//print_board();
+}
+
+/**
+void floodfill(int x, int y, char start, char res) {
+	print_board();
+	if (x < 0 || y < 0 || x >= n || y >= 10 || visited[x][y] || board[x][y] != start) {
+		return;
+	}
+	visited[x][y] = true;
+	board[x][y] = res;
+	flood++;
+	floodfill(x + 1, y, start, res);
+	floodfill(x, y + 1, start, res);
+	floodfill(x - 1, y, start, res);
+	floodfill(x, y - 1, start, res);
+}
+**/
+void gravity(int ind) {
+	for (int j = 0; j < 150; j++) {
+		for (int i = n-1; i >=1; i--) {
+			if (board[i][ind] == '0') {
+				swap(board[i][ind], board[i-1][ind]);
+			}
+		}
+	}
+
+}
+int main()
+{
+
+	ifstream fin("mooyomooyo.in");
+	ofstream fout("mooyomooyo.out");
+	int k;
+	cin >> n >> k;
+	memset(board, '0', sizeof(board));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < 10; j++) {
+			cin >> board[i][j];
+		}
+	}
+	//print_board();
+	bool good = true;
+	while (good) {
+		good = false;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 10; j++) {
+				char temp = board[i][j];
+				if (temp != '0' && temp != temp_char) {
+					node src = { i,j };
+					flood = 0;
+
+					floodfill(src, temp, temp_char);
+					cout << flood << endl;
+					if (flood >= k) {
+						//print_board();
+					//	cout << flood << endl;
+						good = true;
+
+						floodfill(src, temp_char, '0');
+					}
+					else {
+						
+						floodfill(src, temp_char, temp);
+					}
+				}
+			}
+		}
+		//print_board();
+		for (int i = 0; i < 10; i++) {
+			gravity(i);
+		}
+		//print_board();
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < 10; j++) {
+			cout << board[i][j];
+		}
+		cout << endl;
+	}
+	//cin.close();
+//	cout.close();
+	return 0;
+}

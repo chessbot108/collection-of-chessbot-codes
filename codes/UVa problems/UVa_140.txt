@@ -1,0 +1,137 @@
+// Example program
+#include <iostream>
+#include <string>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <iomanip>
+#include <map>
+
+#define int_max 0x3fffffff //practical upper bound
+#define cont continue
+#define max_v 1010
+#define N 30
+
+using namespace std;
+
+
+bool graph[N + 2][N + 2];
+bool visited[N + 2];
+string s, sol;
+int n;
+int min_ = int_max;
+
+
+int INT(char a){
+    return int(a - 'A');
+}   
+
+int check(const string& a){
+    int max_ = -1;
+    for(int i = 0; i<a.size(); i++){
+        for(int j = 0; j<a.size(); j++){
+            if(i == j) cont;
+            //if(out) cout << i << ' ' << j << ' ' << INT(a[i]) << ' ' << INT(a[j]) << ' ' << graph[INT(a[i])][INT(a[j])] << endl;
+            if(graph[INT(a[i])][INT(a[j])]){
+                max_ = max(max_, abs(i - j));
+            }
+        }
+    }
+    //cout << max_ << endl;
+    return max_;
+}
+
+
+
+void dfs(){
+    if(s.size() == n){
+        //cout << s << endl;
+        int temp = check(s);
+        if(temp < min_){
+            //cout << s + " " << temp << endl;
+            check(s);
+            min_ = temp;
+            
+            sol = s;
+        }
+        return;
+    }
+    
+    for(int i = 0; i<N; i++){
+        if(!visited[i]){
+            s.push_back(char(i + 'A'));
+            visited[i] = true;
+            dfs();
+            visited[i] = false;
+            s.pop_back();
+        }
+    }   
+    
+    
+}
+
+void deconstruct(){
+    memset(graph, false, sizeof(graph));
+    memset(visited, true, sizeof(visited));
+    n = 0;
+    min_ = int_max;
+    s.clear();
+    sol.clear();   
+}
+
+int main(){
+    string a;
+    while(cin >> a){
+        if(a == "#") break;
+        deconstruct();
+        a.push_back(';');
+        int state = 0;
+        for(int i = 0; i<a.size(); i++){
+            if(a[i] == ':'){
+                state = INT(a[i-1]);
+            }else if(a[i] == ';'){
+                int v = i-1;
+                while(a[v] != ':'){
+                    graph[state][INT(a[v])] = true;
+                    v--;
+                }
+            }
+        }   
+        for(int i = 0; i<a.size(); i++){
+            if(a[i] != ':' && a[i] != ';'){
+                visited[INT(a[i])] = false;
+            }
+            
+        }
+        
+        for(int i = 0; i<N; i++){
+            if(!visited[i]){
+                n++;
+            }
+        }
+        
+        for(int i = 0; i<N; i++){
+            for(int j = 0; j<N; j++){
+                //cout << graph[i][j] << ' ';   
+            }
+            //cout << endl;
+        }
+        
+        dfs();
+        
+        for(int i = 0; i<sol.size(); i++){
+            cout << sol[i] << ' ';   
+        }
+        printf("-> %d\n", min_);
+        
+        
+        
+    }
+    
+    return 0;
+}

@@ -1,0 +1,141 @@
+/**
+NAME: weiming2
+LANG: C++14
+TASK: butter
+**/
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_e 3000
+#define max_v 900
+#define cin fin
+#define cout fout
+using namespace std;
+
+ifstream fin("butter.in");
+ofstream fout("butter.out");
+
+struct node{
+	int key, dist;
+	bool operator < (const node& b) const{
+		return dist > b.dist;
+	}
+};
+
+
+struct edge{
+	int u, v, w;
+	
+	bool operator < (const edge& b) const{
+		return u < b.u;
+	}
+} edges[max_e];
+
+int U[max_e], V, E, C;
+int dist[max_v], has_cow[max_v];
+
+int get_ind(int u){
+	return lower_bound(U, U + E*2, u) - &U[0];
+}
+
+int dijkstra(int src){
+	memset(dist, byte_max, sizeof(dist));
+	
+	dist[src] = 0;
+	
+	node s {src, 0};
+	priority_queue<node> pq;
+	pq.push(s);
+	
+	int cows = 0, total = 0;
+	
+	while(!pq.empty()){
+		
+		node cur = pq.top(); pq.pop();
+		int key = cur.key; 
+		
+		if(dist[key] < cur.dist) cont;
+		
+		if(has_cow[key]){
+			total += cur.dist * has_cow[key];
+			cows++;
+		}
+		
+		if(cows == C) break;
+		
+		for(int i = get_ind(key); edges[i].u == key; i++){
+			if(edges[i].w + cur.dist < dist[edges[i].v]){
+				dist[edges[i].v] = cur.dist + edges[i].w;
+				node a {edges[i].v, cur.dist + edges[i].w};
+				pq.push(a);
+			}
+		}
+		
+	}
+	
+	
+	
+	//if(cows < C) return -1;
+	
+	return total;
+	
+}
+
+int solve(){
+	int mini = int_max;
+	for(int i = 0; i<V; i++){
+		mini = min(mini, dijkstra(i));
+	}
+	return mini;
+}
+
+
+int main() {
+	
+	
+	cin >> C >> V >> E;
+	
+	for(int i = 0; i<C; i++){
+		int y;
+		cin >> y;
+		has_cow[--y]++;
+	}
+	
+	for(int i = 0; i<E; i++){
+		int s, d, w;
+		cin >> s >> d >> w;
+		s--; d--;
+		edges[i*2].u = s; edges[i*2 +1].v = s;
+		edges[i*2 +1].u = d; edges[i*2].v = d;
+		edges[i*2 +1].w = w; edges[i*2].w = w; 
+	}
+
+
+	sort(edges, edges + E*2);
+	
+	for(int i = 0; i<E*2; i++){
+		U[i] = edges[i].u;
+	}
+		
+		
+	cout << solve() << endl;
+
+  	return 0;
+}

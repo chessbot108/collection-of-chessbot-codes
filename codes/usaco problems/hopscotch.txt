@@ -1,0 +1,66 @@
+// Example program
+#include <iostream>
+#include <string>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <iomanip>
+#include <map>
+#include <fstream>
+
+#define int_max 0x3fffffff //practical upper bound
+#define cont continue
+#define max_v 220
+#define MOD 1000000007
+#define cin fin
+#define cout fout
+using namespace std;
+ifstream fin("hopscotch.in");
+ofstream fout("hopscotch.out");
+long long dp[max_v][max_v];
+long long arr[max_v][max_v];
+int r, c, K;
+inline long long mod(long long a){
+    return a % MOD;
+}
+
+long long walk(const int& a, const int& b){
+    //printf("%d, %d, %d\n", a+1, b+1, cnt);
+    if(dp[a][b] != 0){
+        return dp[a][b];
+    }if(a == r - 1 && b == c - 1){
+        return 1;
+    }
+    long long &ans = dp[a][b];
+    
+    for(int i = a + 1; i<r; i++){
+        for(int j = b + 1; j<c; j++){
+            if(arr[i][j] != arr[a][b]){
+                ans += walk(i, j);
+                ans = mod(ans);
+            }
+        }
+    }
+    
+    //printf("%d, %d, %d is %lld\n", a+1, b+1, cnt, dp[a][b][cnt]);
+    return mod(ans);
+}
+
+int main(){
+  cin >> r >> c >> K;
+  memset(dp, 0, sizeof(dp));
+  for(int i = 0; i<r; i++){
+      for(int j = 0; j<c; j++){
+            cin >> arr[i][j];   
+      }
+  }
+  
+  cout << walk(0, 0);
+  
+  return 0;
+}

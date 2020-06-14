@@ -1,0 +1,64 @@
+/**
+NAME: weiming2
+LANG: C++14
+TASK: inflate
+**/
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 10100
+#define cout fout
+#define cin fin
+
+using namespace std;
+
+ifstream fin("inflate.in");
+ofstream fout("inflate.out");
+
+int dp[max_v];
+int v[max_v], w[max_v];
+int n, k;
+
+int main() {
+	
+	cin >> k >> n;
+	
+	for(int i = 0; i<n; i++){
+		cin >> v[i] >> w[i];
+	}
+	
+	
+	dp[0] = 0;
+	
+	for(int i = 1; i <= k + 1; i++){
+		for(int j = 0; j<n; j++){
+			if(w[j] > i) cont;
+			dp[i] = max(dp[i], dp[i - w[j]] + v[j]);
+		}
+	}
+	
+	cout << dp[k] << endl;
+	
+	
+  	return 0;
+}
