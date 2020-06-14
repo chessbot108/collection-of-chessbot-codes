@@ -1,0 +1,51 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 1010
+
+using namespace std;
+
+int dp[max_v];
+int arr[max_v];
+int maxi = -1;
+int main() {
+  	
+  	int n;
+  	cin >> n;
+  	for(int i = 0; i<n; i++){
+  		cin >> arr[i];	
+	}
+	 
+	dp[0] = 1;
+	
+	for(int i = 0; i<n; i++){
+		for(int j = 0; j<i; j++){
+			if(arr[j] < arr[i]){
+				dp[i] = max(dp[i], dp[j] + 1);
+			}
+		}
+		maxi = max(maxi, dp[i]);
+		dp[i] = max(dp[i], 1);
+	}
+	
+	cout << maxi;
+	
+	return 0;
+}

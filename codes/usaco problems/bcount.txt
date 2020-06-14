@@ -1,0 +1,68 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 100010
+
+#define cin fin
+#define cout fout
+using namespace std;
+
+ifstream fin("bcount.in");
+ofstream fout("bcount.out");
+
+int prefix[max_v][4];
+
+int main() {
+  	
+  	int n, q;
+  	
+  	cin >> n >> q;
+  	
+  	for(int i = 1; i<=n; i++){
+  		int x;
+		cin >> x;	
+  		prefix[i][--x] = 1;
+	}
+  	
+  	for(int i = 1; i<=n; i++){
+  		for(int j = 0; j<3; j++){
+  			prefix[i][j] += prefix[i - 1][j];
+  			//printf("%3d", prefix[i][j]);
+		}
+		//puts("");
+	}
+	
+	
+	while(q--){
+		int a, b;
+		cin >> a >> b;
+		a--;
+		//b--;
+		cout << prefix[b][0] - prefix[a][0] << " ";
+		cout << prefix[b][1] - prefix[a][1] << " ";
+		cout << prefix[b][2] - prefix[a][2] << endl;
+		
+		
+		
+	}
+  	
+  	
+  	return 0;
+}

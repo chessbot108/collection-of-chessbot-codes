@@ -1,0 +1,86 @@
+#include <fstream>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <sstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 1010
+ 
+using namespace std;
+
+int teams[max_v * max_v];
+bool vis[max_v];
+int main(){
+	
+	int t, kase = 0;
+	while(cin >> t){
+		if(t == 0){
+			break;
+		}
+		
+		
+		queue<int> arr[max_v], Q;
+		
+		memset(teams, 0, sizeof(teams));
+
+		for(int i = 1; i<=t; i++){
+			int n;
+			cin >> n;
+			for(int j = 0; j<n; j++){
+				int a;
+				cin >> a;
+				teams[a] = i;
+			}
+		}
+		
+		cout << "Scenario #" << ++kase << endl;
+		
+		string cmd;
+		while(cin >> cmd){
+			if(cmd == "STOP"){
+				break;
+			}
+			if(cmd == "ENQUEUE"){
+				int n;
+				cin >> n;
+				if(arr[teams[n]].size() == 0){
+					Q.push(teams[n]);
+				}
+				
+				arr[teams[n]].push(n);
+					
+			}else{
+				
+				
+				cout << arr[Q.front()].front() << endl;
+				
+				arr[Q.front()].pop();
+				
+				if(arr[Q.front()].size() == 0){
+					Q.pop();
+				}
+			}
+			
+		}
+		
+		
+		
+		cout << endl;
+	}
+	
+	return 0;
+}
+
+

@@ -1,0 +1,67 @@
+/**
+  NAME: weiming2
+  LANG: C++14 
+  TASK: nocows
+**/
+#include <iostream>
+#include <string>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <iomanip>
+#include <map>
+#include <fstream>
+
+#define int_max 0x3fffffff //practical upper bound
+#define cont continue
+#define max_v 210
+#define mod 9901
+#define cout fout
+#define cin fin
+
+
+using namespace std;
+
+ifstream fin("nocows.in");
+ofstream fout("nocows.out");
+
+int dp[max_v][max_v];
+int dp2[max_v][max_v];
+
+int relax(int i, int j, int k){
+    return (dp2[i-2][k]*dp[i-1][(j-1)-k] + 
+    dp[i-1][k]* dp2[i-2][(j-1)-k] + 
+    dp[i-1][k]* dp[i-1][(j-1)-k]) % mod;
+}
+
+int main(){
+    int n, l;
+    cin >> n >> l;
+    dp[1][1] = 1;
+    
+    for(int i = 2; i<=l; i++){
+        for(int j = 1; j<=n; j+=2){
+            for(int k = 1; k<=((j-1)-k); k+=2){
+                int &cur = dp[i][j];
+                cur += relax(i, j, k);
+                if(k != ((j-k)-1)) cur*= 2;
+                cur %= mod;
+            }
+            
+        }
+        
+        for(int k = 0; k <= n; k++){
+            dp2[i-1][k] += dp[i-1][k] + dp2[i-2][k];
+            dp2[i-1][k] %= mod;
+        }
+    }
+    
+    cout << dp[k][n] % mod << endl;
+    
+    return 0;
+}

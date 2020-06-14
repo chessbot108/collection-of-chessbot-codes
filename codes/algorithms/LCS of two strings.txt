@@ -1,0 +1,53 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 1010
+
+using namespace std;
+
+int dp[max_v][max_v];
+
+int main() {
+  	
+  	string a, b;
+  	cin >> a >> b;
+  	int n = a.size(), m = b.size();
+  	for(int i = 1; i<=n; i++){
+  		//bool incr = false;
+		for(int j = 1; j<=m; j++){
+  			int& cur = dp[i][j];
+  			
+  			cur = max(cur, dp[i - 1][j]);
+  			cur = max(cur, dp[i][j - 1]);
+  			
+  			if(a[i - 1] == b[j - 1]){
+				cur = max(cur, dp[i - 1][j - 1] + 1);	
+			}
+			
+			
+			//printf("%d %d %d\n", i, j, cur);	
+		}
+		//cout << endl;
+	}
+  	
+  	cout << dp[n][m];
+  	
+  	return 0;
+}

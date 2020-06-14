@@ -1,0 +1,92 @@
+/**
+NAME: weiming2
+LANG: C++14
+TASK: fence
+**/
+#include <iostream> 
+#include <stack>
+#include <queue> 
+#include <vector> 
+#include <cstdio> 
+#include <cstring> 
+#include <cmath> 
+#include <utility>
+#include <algorithm> 
+#include <fstream> 
+#include <iomanip> 
+#include <string> 
+#include <climits> 
+#include <set> 
+#include <iterator>
+#include <fstream>
+#include <list>
+
+#define int_max 0x3f3f3f3f
+#define cont continue
+#define max_v 540
+#define byte_max 0x3f
+
+using namespace std;
+
+int graph[max_v][max_v];
+vector<int> path;
+int V, E, degree[max_v];
+
+void dfs(int cur){
+	for(int i = 1; i<=500; i++){
+		if(graph[i][cur]){
+			graph[i][cur]--;
+			graph[cur][i]--;
+			dfs(i);
+		}
+	}
+	path.push_back(cur);
+}
+
+
+
+int main(){
+	freopen("fence.in", "r", stdin);
+	freopen("fence.out", "w+", stdout);
+	scanf("%d", &E);
+	
+	for(int i = 0; i<E; i++){
+		int a, b;
+		scanf("%d%d", &a, &b);
+		graph[a][b]++;
+		graph[b][a]++;
+		degree[a]++;
+		degree[b]++;
+	}
+	
+	
+	int ind = -1;
+	for(int i = 1; i<=500; i++){
+		if(degree[i]%2){
+			ind = i;
+			break;
+		}
+	}
+	
+	if(ind != -1){
+		dfs(ind);
+	}else{
+		for(int i = 1; i<=500; i++){
+			if(degree[i]){
+				ind = i;
+				break;
+			}
+		}
+		dfs(ind);
+	}
+	
+	for(int i = path.size()-1; i>=0; i--){
+		printf("%d\n", path[i]);
+	}
+	
+	
+	
+	
+	return 0;
+}
+

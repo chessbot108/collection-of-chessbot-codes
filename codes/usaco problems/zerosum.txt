@@ -1,0 +1,114 @@
+/**
+NAME: weiming2
+LANG: C++14
+TASK: zerosum
+**/
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <iomanip>
+#include <map>
+
+#define int_max 0x3fffffff //practical upper bound
+#define cont continue
+#define max_v 220
+#define max_l 10100
+#define N 3
+#define cin fin
+#define cout fout
+
+using namespace std;
+
+ifstream fin("zerosum.in");
+ofstream fout("zerosum.out");
+
+const string ops[] = {" ", "+", "-"};
+int n;
+vector<string> vec;
+
+void print(const string& a){
+    cout << 1;
+    for(int i = 0; i<a.size(); i++){
+        cout << a[i] << i + 2;
+    }
+    cout << endl;
+}
+
+void init(int& cur, int&total, char op){
+    cur = 3;
+    if(op == ' '){
+        total = 12;   
+    }else if(op == '+'){
+        total = 3;   
+    }else{
+        total = -1;   
+    }
+    
+}
+
+bool check(string a){
+    int cur;
+    int total;
+    init(cur, total, a[0]);
+    for(int i = 1; i<a.size(); i++){
+        if(a[i] == ' '){
+            if(a[i-1] == ' '){
+                return false;
+            }else if(a[i-1] == '+'){
+                total += (cur - 1)*10;
+                total += 1;
+            }else{
+                 total -= ((cur - 1) * 10) + 1;  
+            }
+        }else if(a[i] == '+'){
+            total += cur;   
+        }else{
+            total -= cur;   
+        }
+        cur++;
+    }
+    //cout << total << endl;
+    return total == 0;
+}
+
+
+void gen(string& a){
+    if(a.size() == n-1){
+        //cout << a << endl;
+        if(check(a))
+            vec.push_back(a);   
+            
+        return;
+    }
+    for(int i = 0; i<N; i++){
+        string temp = a + ops[i];
+        gen(temp);
+    }
+    
+}
+
+
+int main(){
+    cin >> n;
+    //cout << check("+-");
+    string ans = "";
+    gen(ans);
+    //cout << "gened\n";
+    sort(vec.begin(), vec.end());
+    
+    for(int i = 0; i<vec.size(); i++){
+        print(vec[i]);   
+    }
+    
+    
+    
+    return 0;
+}

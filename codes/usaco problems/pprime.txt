@@ -1,0 +1,68 @@
+/**
+	ID: weiming2
+	LANG: C++
+	TASK: pprime
+**/
+
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <iomanip>
+#include <vector>
+#define cin fin
+#define cout fout
+using namespace std;
+
+int odd_pali(int a) {
+	int b = a;
+	while (a > 0) {
+		a /= 10;
+		b *= 10;
+		b += a % 10;
+		
+	}
+	return b/10;
+}
+
+
+bool is_prime(int a) {
+	for (int i = 2; i < sqrt(a) + 1; i++) {
+		if (a % i == 0) {
+			return false;
+		}
+	}
+	return true;
+}
+int main()
+{
+	ifstream fin("pprime.in");
+	ofstream fout("pprime.out");
+	int a, b;
+	cin >> a >> b;
+	if (b < a) {
+		swap(a, b);
+	}
+
+	for (int i = 0; i < 20000; i++) {
+		//cout << i << "-> odd_pali(" << odd_pali(i) << ") and even_pali(" << even_pali(i) << ")\n";
+		int temp = odd_pali(i);
+		if (temp > b) {
+			break;
+		}
+		if ((is_prime(temp) && temp >= a)) {
+			if (temp == 101) {
+				cout << "11\n";
+			}
+			cout << temp << endl;
+		}
+	}
+
+
+	fout.close();
+	fin.close();
+	return 0;
+
+}

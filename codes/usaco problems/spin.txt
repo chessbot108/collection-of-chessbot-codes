@@ -1,0 +1,118 @@
+/**
+NAME: weiming2
+LANG: C++11
+TASK: spin
+**/
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 110
+#define N 7
+#define cin fin
+#define cout fout
+using namespace std;
+
+ifstream fin("spin.in");
+ofstream fout("spin.out");
+
+
+int speed[N], n[N];
+int wedge_l[N][N];
+int wedge_r[N][N];
+
+bool check_wedge(int i, int j, int sec, int deg){
+	int l = ((sec * speed[i]) + wedge_l[i][j]) % 360;
+	int r = ((sec * speed[i]) + wedge_r[i][j]) % 360;
+	
+	int temp = (360 - l);
+	
+	if(deg >= l && deg <= r){
+		//if(deg == 270)
+			//printf("%d %d %d %d %d\n",i,  l, r, sec, deg);
+		return true;
+	}else if(l > r){
+		int L = (l + temp) % 360;
+		int R = (r + temp) % 360;
+		int D = (deg + temp) % 360;
+		//if(sec == 9)
+		//	printf("%d %d %d -> %d %d %d\n", l, r, deg, L, R, D);
+		return (D >= L && D <= R);
+	}else{
+		return false;
+	}
+	
+	
+}
+
+
+bool check(int sec, int deg){
+	bool ans = true;
+	//printf("cur: %d %d\n", sec, deg);
+	for(int i = 0; i<5; i++){
+		bool cur = false;
+		for(int j = 0; j<n[i]; j++){
+			cur |= check_wedge(i, j, sec, deg);
+		}
+		ans &= cur;
+	}
+	
+	//printf("%d %d -> %d\n", sec, deg, (int) ans);
+	
+	return ans;
+}
+
+
+int main() {
+  	
+  	for(int i = 0; i<5; i++){
+  		cin >> speed[i] >> n[i];
+  		for(int j = 0; j<n[i]; j++){
+  			cin >> wedge_l[i][j]; 
+			int y;
+			cin >> y;
+			wedge_r[i][j] = (wedge_l[i][j] + y) % 360;	
+		}
+	}
+  	
+  	int sol = -1;
+  	
+  	for(int i = 0; i<360; i++){ //seconds
+  		for(int j = 0; j<360; j++){ //degrees
+  			//if(i > 9) i = 360;
+  			if(check(i, j)){
+  				sol = i;
+				i = 360;
+				j = 360; //basically a "mega-break" to exit all loops 	
+			}
+		}	
+	}
+  	
+  	if(sol == -1){
+  		cout << "none\n";	
+	}else{
+		cout << sol << endl;
+	}
+  	
+  	
+  	
+  	
+  	return 0;
+}
+
+

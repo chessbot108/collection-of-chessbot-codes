@@ -1,0 +1,368 @@
+#include <iostream>
+#include <cstdlib>
+#include <cstdio>
+#include <ctime>
+#include <cassert>
+
+#define pow_2(n) (1 << n)
+#define INF 0x3f3f3f3f
+using namespace std;
+
+struct node{
+	struct node* parent = NULL;
+	struct node* left = NULL;
+	struct node* right = NULL;
+	struct node* pred;
+	struct node* succ;
+	int key, priority;
+	node(int key, struct node* parent){
+		this->key = key;
+		this->parent = parent;
+		this->priority = rand();
+	}
+	node(){}
+};
+
+
+class treap{
+	int size;
+	struct node* root;
+	struct node* mini;
+	struct node* maxi;
+	struct node* T_nil;
+	
+	private: 
+		struct node * tree_max(struct node* x){
+			while(x->right != NULL)
+				x = x->right;
+			return x;
+		}
+	
+		struct node * tree_min(struct node* x){
+			while(x->left != NULL)
+				x = x->left;
+			return x;
+		}
+		
+		void inorder(struct node* x){
+			if(x == NULL) return;
+			inorder(x->left);
+			printf("(%d, %d)\n", x->key, x->priority);
+			inorder(x->right);
+		}
+		
+		void preorder(struct node* x){
+			if(x == NULL) return;
+			printf("(%d, %d)\n", x->key, x->priority);
+			preorder(x->left);
+			preorder(x->right);
+		}
+		
+		void postorder(struct node* x){
+			if(x == NULL) return;
+			postorder(x->left);
+			postorder(x->right);
+			printf("(%d, %d)\n", x->key, x->priority);
+			
+		}
+		
+		
+		void heapify(struct node* start){
+			while(!(start->left == NULL && start->right == NULL)){
+				if(start->right == NULL){
+					start->key = start->left->key;
+					start->priority = start->left->priority;
+					start = start->left;
+				}else if (start->left == NULL){
+					start->key = start->right->key;
+					start->priority = start->right->priority;
+					start = start->right;
+				}else{
+					if(start->left->priority > start->left->priority){
+						start->key = start->left->key;
+						start->priority = start->left->priority;
+						start = start->left;
+					}else{
+						start->key = start->right->key;
+						start->priority = start->right->priority;
+						start = start->right;
+					}
+				}
+			}
+			
+			if(start->parent == NULL){
+				this->root = NULL;
+			}else if(start == start->parent->left){
+				start->parent->left = NULL;
+			}else{
+				start->parent->right = NULL;
+			}
+			
+		}
+		
+		void rotate_left(struct node* x){
+			struct node* y = x->right;
+			x->right = y->left;
+			if(y->left != NULL){
+				y->left->parent = x;
+			}
+			y->parent = x->parent;
+			if(x->parent == NULL){
+				root = y;
+			}else if(x == x->parent->left){
+				x->parent->left = y;
+			}else{
+				x->parent->right = y;
+			}
+			
+			y->left = x;
+			x->parent = y;
+		}
+		
+		void rotate_right(struct node* x){
+			struct node* y = x->left;
+			x->left = y->right;
+			if(y->right != NULL){
+				y->right->parent = x;
+			}
+			y->parent = x->parent;
+			if(x->parent == NULL){
+				root = y;
+			}else if(x == x->parent->left){
+				x->parent->left = y;
+			}else{
+				x->parent->right = y;
+			}
+			
+			y->right = x;
+			x->parent = y;
+		}
+		
+		
+	public:
+		treap(){
+			this->size = 0;
+			this->root = NULL;
+			this->mini = NULL;
+			this->maxi = NULL;
+			
+			this->T_nil = (struct node*) malloc(sizeof(struct node));
+			*T_nil = node();
+			
+		}
+		
+		struct node * find(int key){
+			struct node* start = root;
+			while(start != NULL && key != start->key){
+				if(key < start->key)
+					start = start->left;
+				else
+					start = start->right;
+			}
+			return start;
+		}
+		
+		void insert(int key){
+			struct node* x = root;
+			struct node* y = NULL;
+			while(x != NULL){
+				y = x;
+				if(key < x->key)
+					x = x->left;
+				else
+					x = x->right;
+			}
+			struct node* temp = (struct node*) malloc(sizeof(struct node));
+			*temp = node(key, y);
+			if(y == NULL){
+				root = temp;
+			}else if(key < y->key){
+				y->left = temp;
+			}else{
+				y->right = temp;
+			}
+			
+			
+			mini = tree_min(root);
+			maxi = tree_max(root);
+			
+			
+			mini->pred = T_nil;
+			maxi->succ = T_nil;
+			T_nil->pred = maxi;
+			T_nil->succ = mini;
+			
+			
+			if(temp->pred != T_nil)
+				temp->pred = this->prev(temp);
+			
+			
+			if(temp->succ != T_nil)
+				temp->succ = this->next(temp);
+			
+			
+			if(temp->pred != T_nil){
+				temp->pred->succ = temp;
+			}
+			
+			if(temp->succ != T_nil){
+				temp->succ->pred = temp;
+			}
+			
+			size++;
+			//finished with the bst part
+			//now for the heapify
+			
+			
+			while(temp->parent != NULL && temp->priority < temp->parent->priority){
+				if(temp == temp->parent->left){
+					rotate_right(temp->parent);
+				}else{
+					rotate_left(temp->parent);
+				}
+			}
+			
+			
+		}
+		
+		void erase(int key){
+			struct node* z = find(key);
+			if(z == NULL) return;
+			
+			if(z->succ != NULL){
+				z->succ->pred = z->pred;
+			}
+			
+			if(z->pred != NULL){
+				z->pred->succ = z->succ;
+			}
+			
+			
+			heapify(z);
+			
+			mini = tree_min(root);
+			maxi = tree_max(root);
+			
+			mini->pred = T_nil;
+			maxi->succ = T_nil;
+			T_nil->pred = maxi;
+			T_nil->succ = mini;
+			
+			
+			size--;
+		}
+		
+		struct node* prev(struct node* x){
+			if(x->left != NULL){
+				return tree_max(x->left);
+			}
+			
+			struct node* y = x->parent;
+			while(y != NULL && x == y->left){
+				x = y;
+				y = y->parent;
+			}
+			
+			return y;
+		}
+		
+		struct node* next(struct node* x){
+			if(x->right != NULL){
+				return tree_min(x->right);
+			}
+			
+			struct node* y = x->parent;
+			while(y != NULL && x == y->right){
+				x = y;
+				y = y->parent;
+			}
+			return y;
+			
+		}
+		
+		
+		int distance(struct node* x, struct node* y){
+			if(x == NULL || y == NULL) return -1;
+			
+			struct node* r = x;
+			struct node* l = x;
+			
+			int l_dist = 0, r_dist = 0;
+			
+			bool found = false;
+			
+			
+			while(l != T_nil && r != T_nil){
+				int steps = rand()%8 +1;
+				
+				for(int i = 0; (i<steps && r != T_nil); i++){
+					if(r == y) return r_dist;
+					r_dist++;
+					r = r->succ;
+				}
+				
+				steps = rand()%8 +1;
+				
+				for(int i = 0; (i<steps && l != T_nil); i++){
+					if(l == y) return l_dist;
+					l_dist++;
+					l = l->pred;
+				}
+				
+				
+			}
+			
+			return -1;
+		}
+		
+		
+		void print(){
+			inorder(root);
+		}
+		
+		void print_all(){
+			puts("preorder");
+			preorder(root);
+			puts("inorder");
+			inorder(root);
+			puts("postorder");
+			postorder(root);
+		}
+			
+};
+
+
+
+int main(){
+	srand(time(0));
+	
+	treap t = treap();
+	
+	int com;
+	while(cin >> com){
+		if(com == -1) break;
+		else if(com == 1){
+			cin >> com;
+			t.insert(com);
+		}else if(com == 2){
+			cin >> com;
+			t.erase(com);
+		}else if(com == 3){
+			cin >> com;
+			printf("%d\n", (t.find(com) == NULL) ? 0:1);
+		}else if(com == 4){
+			t.print();
+		}else if(com == 5){
+			t.print_all();
+		}else if(com == 6){
+			int a, b;
+			cin >> a >> b;
+			cout << t.distance(t.find(a), t.find(b)) << endl;
+		}
+	}
+	
+	
+	
+	
+	return 0;
+}

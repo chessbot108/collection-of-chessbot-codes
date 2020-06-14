@@ -1,0 +1,87 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <functional>
+#include <fstream>
+#include <cassert>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 4400000
+
+using namespace std;
+
+char str[1100], key[max_v];
+int child[max_v], brother[max_v], val[max_v], size;
+long long ans;
+
+void construct_trie(){
+	memset(key, 0, sizeof(key));
+	memset(child, 0, sizeof(child));
+	memset(brother, 0, sizeof(brother));
+	memset(val, 0, sizeof(val));
+	size = 1;
+	ans = 0;
+}
+
+void insert(char s[]){
+	int n = strlen(s);
+	int u = 0;
+	
+	for(int i = 0; i<=n; i++){
+		int v = 0;
+		for(int j = child[u]; j; j = brother[j]){
+			if(key[j] == s[i]){
+				v = j;
+				ans += val[j] * 2;
+			}else{
+				ans += val[j];
+			}
+		}
+		
+		if(v == 0){
+			v = size++;
+			key[v] = s[i];
+			val[v] = 0;
+			child[v] = 0;
+			brother[v] = child[u];
+			child[u] = v;
+		}
+		
+		u = v;
+		val[u]++;
+	}
+}
+
+int main() {
+	
+	int n, kase = 0;
+	while(scanf("%d", &n)){
+		if(!n) break;
+		construct_trie();
+		for(int i = 0; i<n; i++){
+			scanf("%s", str);
+			insert(str);
+		} 
+		
+		printf("Case %d: %lld\n", ++kase, ans);
+	}
+	
+	
+	return 0;
+}
+
+

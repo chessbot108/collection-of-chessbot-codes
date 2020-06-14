@@ -1,0 +1,104 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define max_v 11000
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+
+//program specific macros, they help readbility
+#define x first.first
+#define y first.second
+#define index second
+
+#define coor first
+
+using namespace std;
+
+//.first -> coor; .first.first -> x
+// .first.second -> y, .second -> index.
+//the .second is needed to efficiently keep unique keys in my set "active" 
+typedef pair<pair<int, int>, int> point; 
+
+
+map<point, point> other_side;
+set<point> active, intersections;
+multiset<int> active_y;
+vector<point> points;
+
+void process(point a, point b){
+	points.push_back(a);
+	points.push_back(b);
+	
+	other_side[a] = b;
+	other_side[b] = a;
+}
+
+int main() {
+	int n;
+	scanf("%d", &n);
+	
+	for(int i = 0; i<n; i++){
+		int a, b, c, d;
+		scanf("%d%d%d%d", &a, &b, &c, &d);
+		process(make_pair(make_pair(a, b), i), make_pair(make_pair(c, d), i));
+	}
+	
+	sort(points.begin(), points.end());
+	
+	for(int i = 0; i<points.size()-1; i++){
+		if(points[i].coor == points[i + 1].coor){
+			intersections.insert(make_pair(points[i].coor, 0)); //overlapping endpoints
+		}
+	}
+	
+	for(point cur : points){
+		point other = other_side[cur];
+		if(active.find(other) == active.end()){
+			//simplest case, insert cur
+			active_y.insert(cur.y);
+			active.insert(cur);
+		}else{
+			if(cur.x != other.x){//the line is not vertical
+				//just take it out of active
+				active.erase(other);
+				active_y.erase(other.y);
+			}else{
+				//looking at a "finished" vertical line
+				active.erase(other);
+				active_y.erase(active_y.lower_bound(other.y));//have to iterative based erase
+				
+				auto it_up = active_y.upper_bound(cur.y);
+				auto it_down = active_y.lower_bound(other.y);
+				
+				while(it_up != it_down){
+					intersections.insert(make_pair(make_pair(cur.x, *it_down), 0));
+					it_down++;
+				}
+			}
+		}
+	}
+	
+	printf("%d\n", intersections.size());
+	
+	for(point cur : intersections){
+		printf("(%d, %d)\n", cur.x, cur.y);
+	}
+	
+	
+	return 0;
+}

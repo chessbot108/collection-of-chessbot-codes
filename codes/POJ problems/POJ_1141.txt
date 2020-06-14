@@ -1,0 +1,113 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 110
+
+using namespace std;
+int dp[max_v][max_v], split[max_v][max_v];
+char a[max_v];
+/**
+
+dp[i][j] = min amount needed to be added
+if(s[i] == !s[j]) dp[i][j] = dp[i+1][j-1]
+else dp[i][j] = min(dp[i][k] + dp[k+1][j]) for all values k in range(i, j) 
+
+split[i][j] is where to split string i, j
+if no split, -1
+else the k value from above
+**/
+
+void print(int l, int r){
+	if(l > r) return;
+	if(l == r){
+		if(a[l] == '[' || a[r] == ']'){
+			printf("[]"); //cout to slow
+		}else{
+			printf("()");
+		}
+	}else{
+		int k = split[l][r];
+		
+		if(k == -1){
+			putchar(a[l]);
+			print(l + 1, r - 1);
+			putchar(a[r]);
+		}else{
+			print(l, k);
+			print(k + 1, r);
+		}
+		
+	}
+}
+
+
+
+int main() {
+  	
+  	while(gets(a)){
+  		memset(dp, 0, sizeof(dp));
+		memset(split, -1, sizeof(split));
+		
+		int n = strlen(a);
+		
+		if(n == 0){
+			cout << endl;
+			cont;
+		}
+		
+		
+		for(int i = 0; i<n; i++){
+			for(int j = 0; i + j < n; j++){
+				if(i == 0){
+					dp[j][j] = 1;
+					cont;
+				}
+				
+				
+				int l = j, r = i + j;
+				dp[l][r] = int_max;
+				
+				if((a[l] == '(' && a[r] == ')') || (a[l] == '[' && a[r] == ']')){
+					//perfect interval;
+					dp[l][r] = dp[l + 1][r - 1];
+					split[l][r] = -1;
+				}
+				
+				
+				for(int k = l; k < r; k++){
+					if(dp[l][k] + dp[k + 1][r] < dp[l][r]){
+						dp[l][r] = dp[l][k] + dp[k + 1][r];
+						split[l][r] = k;
+					}
+				}
+				
+			}
+		}
+		
+		print(0, n - 1);
+		cout << endl;
+  	
+  	}
+  	
+  	
+  	return 0;
+}

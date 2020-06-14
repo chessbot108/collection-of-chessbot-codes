@@ -1,0 +1,107 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 1010
+
+#define x first
+#define y second
+using namespace std;
+
+typedef pair<int, int> point;
+
+vector<point> points;
+set<point> coor;
+set<int> active;
+
+/**
+i hope this struct i make will help my code.
+this struct stores the distance between two points
+this is better than a double (no precision issues)
+and better than storing a huge integer that is the square
+since then i will have to change everything to long long's 
+which would be a pain
+**/
+struct dist{
+	int x, y;
+	point p1, p2;
+	dist(int a, int b){
+		x = a, y = b;
+	}
+	dist(point a, point b){
+		x = abs(a.x - b.x);
+		y = abs(a.y - b.y);
+		p1 = a; p2 = b;
+	}
+	
+	bool operator < (const dist& b) const{
+		return ((long long)(x*x) + (long long)(y*y)) < ((long long)(b.x*b.x) + (long long)(b.y*b.y));
+	}
+	
+	double val(){
+		return sqrt((double)(x*x + y*y));
+	}
+};
+
+int main() {
+  	//freopen("a_bunch_of_points.in", "r", stdin);
+  	int n;
+  	scanf("%d", &n);
+  	
+  	for(int i = 0; i<n; i++){
+  		int a, b;
+		scanf("%d%d", &a, &b);
+		//coor.insert(make_pair(a, b));
+		points.push_back(make_pair(a, b));
+	}
+	
+	sort(points.begin(), points.end());
+	coor.insert(points[0]);
+	active.insert(points[0].x);
+	
+	dist sol = dist(points[0], points[1]);
+	//printf("dist form %d %d, %.4lf\n", points[0].x, points[0].y, sol.val());
+	for(int i = 1; i<n; i++){
+		int x = points[i].x;
+		int y = points[i].y;
+		while(!active.empty() && sol < dist(make_pair(*(active.begin()), y), points[i])){
+			active.erase(active.begin());
+		}
+		for(int c_x : active){
+			auto it1 = coor.lower_bound(make_pair(c_x, y - ceil(sol.val())));
+			auto it2 = coor.upper_bound(make_pair(c_x, y + ceil(sol.val())));
+			while(it1 != it2){
+				if(dist(*it1, points[i]) < sol){
+					sol = dist(*it1, points[i]);
+				}
+				it1++;
+			}
+		}
+		active.insert(x);
+		coor.insert(points[i]);
+	}
+  	
+  	printf("the distance between (%d, %d) and (%d, %d) is approx %.3lf which is the shortest distance\n", sol.p1.x, sol.p1.y, sol.p2.x, sol.p2.y, sol.val());
+  	
+  	return 0;
+}
+

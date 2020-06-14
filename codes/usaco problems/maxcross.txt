@@ -1,0 +1,66 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 110000
+#define cin fin
+#define cout fout
+using namespace std;
+
+ifstream fin("maxcross.in");
+ofstream fout("maxcross.out");
+
+int prefix[max_v];
+int N, K, B;
+
+
+int get_sum(int a){
+	return prefix[a + K - 1] - prefix[a];
+}
+
+int main() {
+	cin >> N >> K >> B;
+	
+	for(int i = 0; i<B; i++){
+		int broken;
+		cin >> broken;
+		prefix[broken]++;
+	}
+	
+	
+	for(int i = 1; i<=N; i++){
+		prefix[i] += prefix[i - 1];
+		//printf("%d -> %d\n", i, prefix[i]);
+	}
+	
+	
+	int mini = int_max;
+	
+	for(int i = 1; i<= N - K; i++){
+		mini = min(mini, get_sum(i));
+	}
+	
+	cout << mini;
+		
+  	return 0;
+}
+

@@ -1,0 +1,123 @@
+/**
+  NAME: weiming2
+  LANG: C++14 
+  TASK: concom
+**/
+#include <iostream>
+#include <string>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <iomanip>
+#include <map>
+#include <fstream>
+
+#define int_max 0x3fffffff //practical upper bound
+#define cont continue
+#define max_v 110
+#define cin fin
+#define cout fout
+
+using namespace std;
+
+bool con[max_v][max_v];
+int has[max_v][max_v];
+bool b_arr[max_v];
+
+ifstream fin("concom.in");
+ofstream fout("concom.out");
+
+void owns(int a, int b){//makes a own b
+    if(con[a][b]) return;
+    con[a][b] = true;
+    for(int i = 0; i<max_v; i++){
+        if(b_arr[i]){
+            has[a][i] += has[b][i];
+        }
+    }
+    
+    
+
+
+    for(int i = 0; i<max_v; i++){
+        
+        if(con[i][a]){
+            owns(i, b);   
+        }
+        
+    }
+
+    for(int i = 0; i<max_v; i++){
+        
+       if(has[a][i] > 50){
+            owns(a, i);   
+        }
+        
+    }
+
+    for(int i = 0; i<max_v; i++){
+        
+        if(con[i][a]){
+            owns(i, b);   
+        }
+        
+    }
+   for(int i = 0; i<max_v; i++){
+        
+        if(has[a][i] > 50){
+            owns(a, i);   
+        }
+        
+    }
+    
+}
+
+void have(int a, int b, int P){
+    for(int i = 0; i<max_v; i++){
+        if(con[i][a]){
+            has[i][b] += P;
+        }
+    }
+    
+    for(int i = 0; i<max_v; i++){
+        if(has[i][b] > 50){
+            owns(i, b);
+        }
+    }
+}
+
+int main(){
+    int n;
+    cin >> n;
+    
+    for(int i = 0; i<max_v; i++){
+        con[i][i] = true;
+    }
+    
+    for(int i = 0; i<n; i++){
+        int s, d, w;
+        cin >> s >> d >> w;
+        s--;
+        d--;
+        b_arr[s] = true;
+        b_arr[d] = true;
+        have(s, d, w);
+    }
+    
+        
+    
+    for(int i = 0; i<max_v; i++){
+        for(int j = 0; j<max_v; j++){
+            if(con[i][j] && i != j){
+                cout << i + 1 << ' ' << j + 1 << endl;   
+            }
+        }
+    }
+    
+    return 0;
+}
