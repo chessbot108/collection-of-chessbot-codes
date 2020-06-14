@@ -1,0 +1,146 @@
+// xjoi_algoithms.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+#include <iostream>
+#include <queue>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <fstream>
+#include <utility>
+#include <vector>
+#include <climits>
+#define cont continue
+#define int_max 0x3fffffff
+#define max_v 110
+#define BLACK -1
+#define GRAY 0
+#define WHITE 1
+using namespace std;
+//store edge info here
+///*
+int Graph[max_v][max_v];
+int time;
+queue<int> sorted_nodes;
+//*/
+/*
+vector<pair<int, int>> edges;
+vector<int> weights;
+*/
+
+struct node {
+	int disc;
+	int fini;
+	int pred;
+	int color;
+} arr[max_v];
+
+//*/
+//methods to help the logic
+void add_edge(int u, int v, int w) {
+	///*
+	Graph[u][v] = w;
+	//*/
+	/*
+	edges.push_back(make_pair(u, v));
+	weights.push_back(w);
+	*/
+}
+
+int get_edge(int u, int v) {
+	///*
+	return Graph[u][v];
+	//*/
+	/*
+	for (int i = 0; i < edges.size(); i++) {
+		if (edges[i].first == u && edges[i].second == v) {
+			return weights[i];
+		}
+	}
+	return int_max;
+	*/
+}
+
+void initalize_single_source(int n) {
+	for (int i = 0; i < n; i++) {
+		arr[i].pred = i;
+		arr[i].color = WHITE;
+	}
+}
+
+bool dfs(int u, int n) {//returns a cycle
+	time++;
+	arr[u].disc = time;
+	arr[u].color = GRAY;
+	bool no_cyc = true;
+	for (int i = 0; i < n; i++) {
+		if (get_edge(u, i) != int_max) {
+			if (arr[i].color == GRAY) {
+				no_cyc = false;
+			}
+			else if (arr[i].color == WHITE) {
+				arr[i].pred = u;
+				no_cyc &= dfs(i, n);
+			}
+		}
+	}
+	time++;
+	arr[u].fini = time;
+	arr[u].color = BLACK;
+	sorted_nodes.push(u);
+	return no_cyc;
+}
+
+bool visit(int n) {
+	initalize_single_source(n);
+	time = 0;
+	bool ans = true;
+	for (int i = 0; i < n; i++) {
+		if (arr[i].color == WHITE) {
+			ans &= dfs(i, n);
+		}
+	}
+	return ans;
+}
+void print_queue(queue <int> Q, vector<int>& temp) {
+	while (!Q.empty()) {
+		cout << Q.front() + 1 << ' ';
+		temp.push_back(Q.front());
+		Q.pop();
+	}
+	cout << endl;
+}
+bool topological_sort(int n, vector<int>& sol) {//returns if there is a negative cycle
+	bool ans = visit(n);
+	if (ans)
+		print_queue(sorted_nodes, sol);
+	return ans;
+}
+int main()
+{
+	int V, E;
+	cin >> V >> E;
+	for (int i = 0; i < V; i++) {
+		for (int j = 0; j < V; j++) {
+			Graph[i][j] = int_max;
+		}
+	}
+	for (int i = 0; i < E; i++) {
+		int s, d, w;
+		cin >> s >> d >> w;
+		//1-index -> 0-index
+		s--;
+		d--;
+		add_edge(s, d, w);
+	}
+	vector<int> sol;
+	if (!topological_sort(V, sol)) {
+		cout << "there was a cycle" << endl;
+	}
+	else {
+		for (int i = 0; i < V; i++) {
+			printf("node %d was found at %d and blackened at %d; it's parent is %d\n", i + 1, arr[i].disc, arr[i].fini, arr[i].pred + 1);
+		}
+	}
+	return 0;
+}
+

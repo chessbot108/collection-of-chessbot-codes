@@ -1,0 +1,111 @@
+// xjoi_algoithms.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+#include <queue>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <fstream>
+#include <utility>
+#include <vector>
+#include <ctime>
+#define cin fin
+#define cout fout
+using namespace std;
+ofstream fout1("textfile2.txt");
+ifstream fin("textfile2.txt");
+ofstream fout("alg_output.txt");
+class Sort {
+protected:
+	int Partition(int* arr, int p, int r) {
+		int x = arr[r];
+		int i = p - 1;
+		for (int j = p; j <= r - 1; j++) {
+			if (arr[j] <= x) {
+				i++;
+				swap(arr[i], arr[j]);
+			}
+		}
+		swap(arr[i + 1], arr[r]);
+		return i + 1;
+	}
+	void Quicksort(int* arr, int p, int r) {
+		if (p < r) {
+			int q = Partition(arr, p, r);
+			Quicksort(arr, p, q - 1);
+			Quicksort(arr, q + 1, r);
+		}
+	}
+public:
+	void print_arr(int* arr, int n) {
+		for (int i = 0; i < n; i++) {
+			cout << arr[i] << '\n';
+		}
+		cout << endl;
+	}
+	void Qsort(int* arr, int n) {
+		Quicksort(arr, 0, n - 1);
+		print_arr(arr, n);
+	}
+};
+//rand_quicksort,uses random partitioning to distribute pivots better; generally performs better than regular quicksort
+class rand_sort :public Sort {
+protected:
+	int Partition(int* arr, int p, int r) {
+		int x = arr[r];
+		int i = p - 1;
+		for (int j = p; j <= r - 1; j++) {
+			if (arr[j] <= x) {
+				i++;
+				swap(arr[i], arr[j]);
+			}
+		}
+		swap(arr[i + 1], arr[r]);
+		return i + 1;
+	}
+	int Rand_Partition(int* arr, int p, int r) {
+		int i = p + (rand() % (r - p));
+		swap(arr[r], arr[i]);
+		return Partition(arr, p, r);
+	}
+	void Rand_Quicksort(int* arr, int p, int r) {
+		if (p < r) {
+			int q = Rand_Partition(arr, p, r);
+			Rand_Quicksort(arr, p, q - 1);
+			Rand_Quicksort(arr, q + 1, r);
+		}
+	}
+public:
+	void Qsort(int* arr, int n) {
+		Rand_Quicksort(arr, 0, n - 1);
+		print_arr(arr, n);
+	}
+};
+int arr[2000000];
+int set_rand(int range) {
+	int n = floor(rand() % range);
+	int mod = rand() % range * n;
+	fout1 << n << endl;
+	for (int i = 0; i < n; i++) {
+		int a = (i + rand()) % mod;
+		arr[i] = a;
+	}
+	return n;
+}
+int main()
+{
+	srand(time(NULL));
+	int n = set_rand(1e3);
+	for (int i = 0; i < n; i++) {
+		//cin >> arr[i];
+		fout1 << arr[i] << endl;
+	}
+
+	rand_sort a;
+	a.Qsort(arr, n);
+	fout.close();
+	fout1.close();
+	return 0;
+}
+

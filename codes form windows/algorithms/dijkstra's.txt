@@ -1,0 +1,122 @@
+// xjoi_algoithms.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+#include <iostream>
+#include <queue>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <fstream>
+#include <utility>
+#include <vector>
+#include <ctime>
+#include <climits>
+#define cont continue
+#define int_max 0x3fffffff
+#define max_v 110
+using namespace std;
+//store edge info here
+///*
+int Graph[max_v][max_v];
+
+//*/
+/*
+vector<pair<int, int>> edges;
+vector<int> weights;
+*/
+
+struct node {
+	int dist;
+	int pred;
+} arr[max_v];
+
+struct cmp {
+	bool operator()(int a, int b) {
+		return arr[a].dist < arr[b].pred;
+	}
+};
+//*/
+//methods to help the logic
+void add_edge(int u, int v, int w) {
+	///*
+	Graph[u][v] = w;
+	//*/
+	/*
+	edges.push_back(make_pair(u, v));
+	weights.push_back(w);
+	*/
+}
+
+int get_edge(int u, int v) {
+	///*
+	return Graph[u][v];
+	//*/
+	/*
+	for (int i = 0; i < edges.size(); i++) {
+		if (edges[i].first == u && edges[i].second == v) {
+			return weights[i];
+		}
+	}
+	return int_max;
+	*/
+}
+bool visited[max_v];
+void relax(int u, int v, int w) {
+	if (arr[v].dist > arr[u].dist + w) {
+		arr[v].dist = arr[u].dist + w;
+		arr[v].pred = u;
+	}
+}
+void initalize_single_source(int src, int n) {
+	for (int i = 0; i < n; i++) {
+		arr[i].dist = int_max;
+		arr[i].pred = -1;
+	}
+	arr[src].dist = 0;
+}
+
+int dijkstra(int src, int dest, int V) {//returns distance from src -> dest, arr stores all sol
+	initalize_single_source(src, V);
+	priority_queue<int, vector<int>, cmp> pq;
+	
+	pq.push(src);
+	while (!pq.empty()) {
+		int u = pq.top();
+		pq.pop();
+		visited[u] = true;
+		for (int i = 0; i < V; i++) {
+			if (Graph[u][i] != int_max) {
+				relax(u, i, get_edge(u, i));
+				pq.push(i);
+			}
+		}
+	}
+	return arr[dest].dist;
+}
+int main()
+{
+	int V, E, src, dest;
+	cin >> V >> E;
+	cin >> src >> dest;
+	src--;
+	dest--;
+	for (int i = 0; i < V; i++) {
+		for (int j = 0; j < V; j++) {
+			Graph[i][j] = int_max;
+		}
+	}
+	for (int i = 0; i < E; i++) {
+		int s, d, w;
+		cin >> s >> d >> w;
+		//1-index -> 0-index
+		s--;
+		d--;
+		add_edge(s, d, w);
+	}
+	cout << "the distance requested by query is: " << dijkstra(src, dest, V) << endl;
+	for (int i = 0; i < V; i++) {
+		if(i != src)
+			cout << "the distance from " << src + 1 << " to " << i + 1 << " is " << arr[i].dist << endl;
+	}
+	return 0;
+}
+
