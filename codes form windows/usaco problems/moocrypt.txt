@@ -1,0 +1,78 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 55
+
+using namespace std;
+
+const int row[] = {1, 1, 1, 0, 0, -1, -1, -1};
+const int col[] = {1, 0, -1, 1, -1, 1, 0, -1};
+char arr[max_v][max_v];
+int n, m;
+
+char get_char(int i, int j){
+    if(i < 0 || j < 0 || i >= n || j >= m) return '!';  
+    else return arr[i][j]; 
+}
+
+bool check(int i, int j, int k, char M, char O){
+    char a = get_char(i, j);
+    char b = get_char(i + row[k], j + col[k]);
+    char c = get_char(i + (2*row[k]), j + (2*col[k]));
+    return(a == M && b == O && c == O);
+}
+
+int combo(char a, char b){
+    if(a == b || a == 'M' || b == 'O') return 0;
+    int total = 0;
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            for(int k = 0; k<8; k++){
+                if(check(i, j, k, a, b)) total++;
+            }
+        }
+    }
+    return total;
+}
+
+
+int main() {
+    freopen("moocrypt.in", "r", stdin);
+    freopen("moocrypt.out", "w+", stdout);
+  	cin >> n >> m;
+  	for(int i = 0; i<n; i++){
+  	    for(int j = 0; j<m; j++){
+  	        cin >> arr[i][j];   
+  	    }
+  	}
+  	
+  	int sol = -1;
+  	for(char a = 'A'; a <= 'Z'; a++){
+  	    for(char b = 'A'; b <= 'Z'; b++){
+  	        sol = max(sol, combo(a, b));   
+  	    }
+  	}
+  	cout << sol << endl;
+  	
+  	return 0;
+}

@@ -1,0 +1,175 @@
+/**
+NAME: weiming2
+LANG: C++14
+TASK: lamps
+**/
+#include <iostream>
+#include <string>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <iomanip>
+#include <map>
+#include <bitset>
+#include <fstream>
+
+#define int_max 0x3fffffff //practical upper bound
+#define cont continue
+#define max_v 1010
+#define odd 025
+#define even 052
+#define n3_1 011
+#define all 077
+#define N 6
+#define cin fin
+#define cout fout
+using namespace std;
+
+vector<int> on;
+vector<int> off;
+
+int ON, OFF;
+
+int n, C;
+
+int ham(int a){
+    int ans = 0;
+    for(int i = 0; i<N + N; i++){
+        if(a & (1 << i)){
+            ans ++;
+        }
+    }
+    return ans;
+}
+
+
+string bin_string(int a){
+    string temp;
+    for(int i = 0; i<N; i++){
+        int cur = bool(a & (1 << i));
+        temp.push_back(cur + '0');
+    }
+    
+    return temp;
+}
+
+int step(int Q, int a){
+      if(Q & (1 << 0)){
+            a ^= odd;   
+      }
+      if(Q & (1 << 1)){
+            a ^= even;   
+      }
+      if(Q & (1 << 2)){
+            a ^= n3_1;
+      }
+      if(Q & (1 << 3)){
+            a ^= all;   
+      }
+      
+      return (a);
+}
+
+bool perm(int a){
+    int ans = all;
+    for(int i = 0; i<(1 << 4); i++){
+        // cout << bin_string(i) + " " + bin_string(step(i, a)) + " "  + bin_string(a) + "\n";
+         if(step(i, a) == all && ham(i) < ham(ans)){
+            ans = i;   
+         }
+    }
+   // cout << ans << " " + bin_string(ans) << ' ' << ham(ans) << ' ' << C << '\n';
+    if(ans == all){
+        return false;   
+    }else if(C >= 3){
+        return true;   
+    }else if(C == 2){
+        return (ans == 8) || (ham(ans) >= C);   
+    }else{
+        return (ham(ans) == C);   
+    }
+    
+}
+
+inline bool check(int a, int i){
+    bool temp = (a & (1 << i));
+    return (!temp && (ON & (1 << i))) || (temp && (OFF & (1 << i)));
+}
+
+bool valid(int a){
+   // cout << bin_string(a) + ' ';
+    if(!perm(a)){
+       // cout << "perm failed\n";
+        return false;
+    }
+    
+    for(int i = 0; i<N; i++){
+         if(check(a, i)){
+             //cout << "bit rules failed\n";
+             return false;
+         }
+    }
+    
+    return true;
+}
+
+
+int main(){
+    ifstream fin("lamps.in");
+    ofstream fout("lamps.out");
+  
+    cin >> n;
+     cin >> C;
+    int a;
+    
+    bitset<N> temp;
+    
+    while(cin >> a){  
+        if(a == -1){
+            break;   
+        }
+        
+        temp[(a-1)%N] = true;
+        on.push_back(a);
+    }
+    ON = temp.to_ulong();
+    temp.reset();
+    while(cin >> a){
+        if(a == -1){
+            break;   
+        }
+        
+        temp[(a-1)%N] = true;
+        off.push_back(a);
+    }
+    OFF = temp.to_ulong();
+    
+  //  cout << bin_string(ON) + " " + bin_string(OFF) << endl;
+  
+  vector<string> vec;
+  for(int i = 0; i < (1 << N); i++){
+        if(valid(i)){
+            string temp2 = bin_string(i);
+            vec.push_back(temp2);
+        }
+  }
+  
+  if(vec.size() == 0){
+    cout << "IMPOSSIBLE\n";
+  }else{
+    sort(vec.begin(), vec.end());
+    for(int i = 0; i<vec.size(); i++){
+        for(int j = 0; j<n; j++){
+            cout << vec[i][j%N];   
+        }
+        cout << endl;
+    }
+  }
+  
+  return 0;
+}

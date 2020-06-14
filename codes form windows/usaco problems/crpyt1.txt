@@ -1,0 +1,86 @@
+/**
+	ID: weiming2
+	LANG: C++14
+	TASK: crypt1
+
+**/
+#include <iostream>
+#include <queue>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <fstream>
+#include <utility>
+#include <vector>
+#include <climits>
+#define cont continue
+#define int_max 0x3fffffff
+#define max_v 101000
+#define cin fin
+#define cout fout
+using namespace std;
+int arr[20];
+bool b_arr[20] = { false };
+bool taken[2000][2000] = { false };
+int make_int(int h, int t, int o) {
+	return  h * 100 + t * 10 + o;
+}
+
+bool works(int a, bool is_part) {
+	if (is_part && a >= 1000) {
+		return false;
+	}
+	else if (!is_part && a >= 10000) {
+		return false;
+	}
+	while (a > 0) {
+		int cur = a % 10;
+		if (!b_arr[cur]) {
+			return false;
+		}
+		a /= 10;
+	}
+	return true;
+}
+int main()
+{
+	ifstream fin("crypt1.in");
+	ofstream fout("crypt1.out");
+	int n;
+	cin >> n;
+	//b_arr[0] = true;
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+		b_arr[arr[i]] = true;
+	}
+	long long total = 0;
+	for (int a = 0; a < n; a++) {
+		for (int b = 0; b < n; b++) {
+			for (int c = 0; c < n; c++) {
+				for (int d = 0; d < n; d++) {
+					for (int e = 0; e < n; e++) {
+
+						int top = make_int(arr[a], arr[b], arr[c]);
+						int bot = make_int(0, arr[d], arr[e]);
+						if (taken[top][bot]) {
+							cont;
+						}
+						int part1 = top * arr[d];
+						int part2 = top * arr[e];
+						int prod = part1 + part2 * 10;
+						taken[top][bot] = true;
+						if (works(part1, true) && works(part2, true) && works(prod, false)) {
+							//printf("  %5d\nx %5d\n_______\n  %5d\n+%5d \n_______\n  %5d\n\n", top, bot, part1, part2, prod);
+							total++;
+						}
+					}
+				}
+			}
+		}
+	}
+	cout << total << endl;
+	fin.close();
+	fout.close();
+	return 0;
+}
+

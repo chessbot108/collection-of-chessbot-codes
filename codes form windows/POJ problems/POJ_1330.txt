@@ -1,0 +1,69 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 11000
+
+using namespace std;
+
+bool vis[max_v];
+int parent[max_v];
+
+int dfs(int cur){
+	if(vis[cur]) return cur;
+	if(cur == 0) return 0;
+	vis[cur] = true;
+	return dfs(parent[cur]);
+}
+
+
+
+int main() {
+  	int T;
+  	scanf("%d", &T);
+  	
+  	while(T--){
+  		int n;
+		scanf("%d", &n);	
+  		
+  		memset(vis, false, sizeof(vis));
+  		memset(parent, 0, sizeof(parent));
+  		
+  		for(int i = 0; i<n-1; i++){
+  			int a, b;
+			scanf("%d%d", &a, &b);	
+  			parent[b] = a;
+		}
+  		int a, b;
+  		scanf("%d%d", &a, &b);
+  		
+  		dfs(a);
+  		printf("%d\n", dfs(b));
+  		
+	}
+  	
+  	
+  	
+  	
+  	
+  	
+  	return 0;
+}

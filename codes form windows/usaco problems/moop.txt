@@ -1,0 +1,84 @@
+#include <iostream>
+#include <cstdio>
+#include <vector>
+#include <map>
+#include <set>
+#include <utility>
+#include <algorithm>
+#define max_v 110000
+using namespace std;
+   
+struct point{
+    int x, y;
+} arr[max_v];
+
+struct str_cmp {
+    bool operator() (const point& a, const point& b) const {
+        if(a.y == b.y) return a.x < b.x;
+        return a.y < b.y;
+    }
+};
+
+bool cmp(point a, point b){
+    if(a.x == b.x) return a.y < b.y;
+    return a.x < b.x;
+}
+
+map <pair<int, int>, int> HASH;
+vector<int> vec[max_v];
+bool visit[max_v];
+
+set<point, str_cmp> act;
+int n;
+
+void dfs(int cur){
+    visit[cur] = true;
+    for(int i : vec[cur]){
+        if(!visit[i]){
+            dfs(i);
+        }
+    }
+}
+
+
+
+int main() {
+    
+	freopen("moop.in", "r", stdin);
+	freopen("moop.out", "w+", stdout);
+	
+	
+    scanf("%d", &n);
+    
+    for(int i = 0; i < n; i++){
+        scanf("%d%d", &arr[i].x, &arr[i].y);
+    }
+    
+    sort(arr, arr + n, cmp);
+    
+    int num = 0;
+    
+    for(int i = 0; i < n; i++){
+        HASH[{arr[i].x, arr[i].y}] = num++;
+    }
+    
+    
+    for(int i = 0; i < n; i++){ //sweep line
+        auto iter = (act.insert(arr[i])).first;
+        for(auto iter2 = act.begin(); iter2 != iter; iter2++){
+            vec[HASH[{iter2->x, iter2->y}]].push_back(HASH[{iter->x, iter->y}]);
+            vec[HASH[{iter->x, iter->y}]].push_back(HASH[{iter2->x, iter2->y}]);
+        }
+    }
+    
+    int sol = 0;
+    
+    for(int i = 0; i < n; i++){
+        if(!visit[i]){
+            dfs(i);
+            sol++;
+        }
+    }
+    
+    printf("%d\n", sol);
+}

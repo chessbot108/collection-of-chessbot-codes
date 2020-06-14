@@ -1,0 +1,160 @@
+#include <fstream>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <bitset>
+#include <unordered_map>
+#include <set>
+#include <sstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 3010
+//#define cin fin
+
+
+using namespace std;
+ifstream fin("die_in_a_hole.txt");
+
+
+set <string> emails;
+map <string, bool> vis;
+
+void HELO(string a){
+	cout << "     HELO " + a + "\n     250\n";
+}
+
+void MAIL_FROM(string a){
+	cout << "     MAIL FROM:<" + a + ">\n     250\n";
+}
+
+bool RCPT_TO(string a){
+	cout << "     RCPT TO:<" + a + ">\n     ";
+	if(emails.count(a) == 0){
+		cout << "550\n";
+		return false;
+	}else{
+		cout << "250\n";
+		return true;
+	}
+}
+
+void DATA(){
+	cout << "     DATA\n     354\n";
+}
+
+void QUIT(){
+	cout << "     QUIT\n     221\n";
+}
+
+string make_city(const string& a){
+	for(int i = 1; i<a.size(); i++){
+		if(a[i-1] == '@'){
+			string b  (a.begin() + i, a.end());
+			return b;
+		}
+	}
+}
+
+
+int main(){
+	string cmd;
+	while(cin >> cmd){
+		if(cmd == "*"){
+			break;
+		}
+		int n;
+		string city;
+		cin >> city >> n;
+		for(int i = 0; i<n; i++){
+			string name;
+			cin >> name;
+			emails.insert(name + "@" + city);
+		}
+	}	
+	string sender;
+	while(cin >> sender){
+		vis.clear();
+		if(sender == "*"){
+			break;
+		}
+		
+		if(emails.count(sender) == 0){
+			cont;
+		}
+		
+		string recipt, sender_city;
+		vector<string> recipts;
+		
+		sender_city = make_city(sender);
+		
+		while(cin >> recipt){
+			if(recipt == "*"){
+				break;
+			}
+			if(!vis[recipt])
+				recipts.push_back(recipt);
+			vis[recipt] = true;
+		}
+		
+		string message, temp;
+		getline(cin, temp);
+		
+		while(getline(cin, temp)){
+			if(temp == "*"){
+				break;
+			}
+			message += "     " + temp + "\n";
+		}
+		
+		for(int i = 0; i<recipts.size(); i++){
+			if(recipts[i] == ""){
+				cont;
+			}
+			string recipt_city = make_city(recipts[i]);
+			vector<string> cur;
+			for(int j = 0; j<recipts.size(); j++){
+				if(i == j || recipts[j] == ""){
+					cont;
+				}
+				if(make_city(recipts[j]) == recipt_city){
+					cur.push_back(recipts[j]);
+					recipts[j] = "";
+				}
+			}
+			
+			cout << "Connection between " + sender_city + " and " + recipt_city + "\n";
+			HELO(sender_city);
+			MAIL_FROM(sender);
+			bool RCPT = false;
+			RCPT |= RCPT_TO(recipts[i]);
+			for(int i = 0; i<cur.size(); i++){
+				RCPT |= RCPT_TO(cur[i]);
+			}
+			
+			if(RCPT){
+				DATA();
+				cout << message;
+				cout << "     .\n     250\n";
+			}
+			
+			QUIT();
+			
+		}
+		
+		
+		
+	}
+	
+	
+	
+	return 0;
+}
+
+

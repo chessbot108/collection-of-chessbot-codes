@@ -1,0 +1,87 @@
+/**
+	NAME: weiming2
+	LANG: C++14
+	TASK: comehome
+**/
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <unordered_map>
+#include <set>
+#include <string>
+#include <sstream>
+#include <functional>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3fffffff
+#define byte_max 0x3f
+#define max_v 130
+#define cin fin
+#define cout fout
+using namespace std;
+ifstream fin("comehome.in");
+ofstream fout("comehome.out");
+vector<pair<int, int>> edges;
+vector<int> weights;
+int dist[max_v];
+int V = max_v, E;
+
+
+void relax(int u, int v, int w){
+	if(dist[u] > dist[v] + w){
+		dist[u] = dist[v] + w;
+	}
+}
+
+void bellman(int src){
+	memset(dist, byte_max, sizeof(dist));
+	dist[src] = 0;
+	for(int i = 0; i<V; i++){
+		for(int j = 0; j<edges.size(); j++){
+			int u = edges[j].first;
+			int v = edges[j].second;
+			int w = weights[j];
+			relax(u, v, w);
+			relax(v, u, w);
+		}
+	}
+}
+
+
+int main() {
+	cin >> E;
+	for(int i = 0; i<E; i++){
+		int w;
+		char s, d;
+		cin >> s >> d >> w;
+		if(s == d) cont;
+		edges.push_back(make_pair(int(s), int(d)));
+		weights.push_back(w);
+	}
+	
+	bellman(int('Z'));
+	
+	int ind, mini = int_max;
+	
+	for(int i = int('A'); i<int('Z'); i++){
+		if(dist[i] < mini){
+			ind = i;
+			mini = dist[i];
+		}
+	}
+	
+	cout << char(ind) << ' ' << mini << endl;
+	
+  	return 0;
+}

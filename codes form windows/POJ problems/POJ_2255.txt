@@ -1,0 +1,60 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <functional>
+#include <fstream>
+#include <cassert>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 30
+
+using namespace std;
+
+char * char_find(char c, char str[], int size){
+	while(size--){
+		 if(str[0] == c) return str;
+		 else str++;
+	}
+	return str;
+}
+
+void dnq(char pre[], char in[], char post[], int size){
+	if(size <= 0) return ;
+	
+	int k = char_find(pre[0], in, size) - &in[0];
+	assert(k != -1);
+	
+	dnq(pre + 1, in, post, k);
+	dnq(pre + k + 1, in + k + 1, post + k, size - k - 1);
+	post[size - 1] = pre[0];
+}
+
+
+int main() {
+	
+	char in[max_v], pre[max_v], post[max_v];
+	while(scanf("%s%s", pre, in) != EOF){
+		int n = strlen(in);
+		dnq(pre, in, post, n);
+		post[n] = 0;
+		puts(post);
+	}
+	
+	return 0;
+}
+
+
