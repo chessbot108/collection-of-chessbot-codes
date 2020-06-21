@@ -35,7 +35,7 @@ void setIO(const string& file_name){
 }
 
 long long sum[max_v * pow_2(5)];
-int lc[max_v], rc[max_v], root[max_v];
+int lc[max_v * pow_2(5)], rc[max_v * pow_2(5)], root[max_v];
 int ind = 0;
 void dup(int& k){
   ind++;
@@ -46,7 +46,7 @@ void dup(int& k){
 }
 
 void U(int p, long long val, int& k, int L, int R){
-  if(p < L || p >= R || R <= L) return ;
+  if(p < L || R <= p || R <= L) return ;
   dup(k);
   if (L + 1 == R){
     sum[k] = val;
@@ -60,20 +60,24 @@ void U(int p, long long val, int& k, int L, int R){
 
 }
 
-
-long long Q(int p, int k, int L, int R){
-  if(p < L || R <= p || R <= L) return 0ll;
-  if(L + 1 == R) return sum[k];
+void U(int qL, int qR, int&k, int val, int L, int R){
+  if(qR <= L || R <= qL || R <= L) return ;
+  dup(k);
+  if(qL <= L && R <= qR){
+    sum[k] += val;
+    return ;
+  }
   int mid = (L + R) / 2;
-  return Q(p, lc[k], L, mid) + Q(p, rc[k], mid, R);
+  U(qL, qR, lc[k], L, mid);
+  U(qL, qR, rc[k], mid, R);
+  sum[k] = sum[lc[k]] + sum[rc[k]];
 }
 
-void print(int v, int n, int s){
-  printf("tree at time %d is: ", v);
-  for(int i = 0; i<n; i++){
-    printf("%lld ", Q(i, root[v], 0, s));
-  } 
-  puts("");
+long long Q(int qL, int qR, int k, int L, int R){
+  if(qR <= L || R <= qL || R <= L) return 0ll;
+  if(qL <= L && R <= qR) return sum[k];
+  int mid = (L + R) / 2;
+  return Q(qL, qR, lc[k], L, mid) + Q(qL, qR, rc[k], mid, R);
 }
 
 int main(){
@@ -81,6 +85,7 @@ int main(){
   int n, q;
   scanf("%d%d", &n, &q);
   int s = pow_2((int)(ceil(log2(n))));
+  ind = s*2 + 1;
   for(int i = 0; i<n; i++){
     scanf("%lld", &sum[i + (s - 1)]);
   }
@@ -91,29 +96,8 @@ int main(){
     rc[i] = RC(i);
     printf("%lld %lld\n", sum[LC(i)], sum[RC(i)]);
   }
+  
 
-  root[0] = 0;
-  ind = s + 1; 
-  for(int i = 1; i<=q; i++){
-    int t, op;
-    scanf("%d%d", &t, &op);
-    root[i] = root[t];
-    if(op == 2){
-      int p;
-      scanf("%d", &p);
-      printf("%lld\n", Q(p - 1, root[i], 0, s));
-    }else if(op == 1){
-      int p;
-      long long val;
-      scanf("%d%lld", &p, &val);
-      U(p - 1, val, root[i], 0, s);
-    }else{
-      break;
-    }
-    print(i, n, s);
-  }
-  
-  
   
 	return 0;
 }
