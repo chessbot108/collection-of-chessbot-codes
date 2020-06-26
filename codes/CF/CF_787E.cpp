@@ -63,38 +63,84 @@ void U(int p, int val, int& k, int L, int R){
   sum[k] = sum[lc[k]] + sum[rc[k]];
 }
 
+int S(int qL, int qR, int k, int L, int R){
+  if(R <= L || qR <= L || R <= qL) return 0;
+  if(qL <= L && R <= qR) return sum[k];
+  int mid = (L + R) / 2;
+  return S(qL, qR, lc[k], L, mid) + S(qL, qR, rc[k], mid, R);
+}
+
+
+void print(int v){
+  printf("for version %d:\n", v);
+  int r = root[v];
+  for(int i = 0; i<n; i++){
+    printf("%d ", S(i, i + 1, r, 0, s));
+  }
+  puts("");
+}
+
 
 void pre_process(){
   s = pow_2(LOG2(n));
   ind = s*2;
-  root[0] = 0;
+  root[n] = 0;
   for(int i = 0; i<s; i++){
     lc[i] = LC(i);
     rc[i] = RC(i);
-    occ[i] = -1;
   }
     
-  for(int i = n; i; i++){
-    int a = arr[i - 1];
-    if(occ[a] == -1){
-      U(i, 1, root[i], 0, S);
+  for(int i = n - 1; i >= 0; i--){
+    int a = arr[i];
+    root[i] = root[i + 1];
+    if(!occ[a]){
+      U(i, 1, root[i], 0, s);
     }else{
-      int temp = root[i + 1];
-      U(occ[a], -1, temp , 0, s);
-      root[i] = temp;
+      U(occ[a], -1, root[i], 0, s);
       U(i, 1, root[i], 0, s);
     }
+    //printf("update type %d\n", (!occ[a]) ? 1 : 2);
+    //printf("%d -> from %d to %d\n", a, (occ[a]) ? occ[a] : -1, i);
+    //print(i);
     occ[a] = i;
   }
-
+  //assert(false);
 }
 
+int bin_search(int kth, int k, int L, int R){
+  if(L + 1 == R) return R;
+  int temp = sum[lc[k]], mid = (L + R) / 2;
+  assert(kth >= 0);
+  if(kth <= temp){
+    return bin_search(kth, lc[k], L, mid);
+  }else{
+    return bin_search(kth - temp, rc[k], mid, R);
+  }
+}
 int main(){
  
   scanf("%d", &n);
 
   for(int i = 0; i<n; i++){
-    scanf("%d", &n);
+    scanf("%d", &arr[i]);
+  }
+  
+  pre_process();
+
+  for(int i = 1; i <= n; i++){
+    int j = 0, ans = 0;
+    while(j < n){
+      ans++;
+      if(S(j, n, root[j], 0, s) <= i){
+        break;
+      }
+      j = bin_search(i + 1, root[j], 0, s) - 1;
+      //printf("%d \n", j);
+    }
+    //printf("%d ", i);
+    printf("%d ", ans);
+    //puts("");
+    //assert(i == 1);
   }
 
 	return 0;
