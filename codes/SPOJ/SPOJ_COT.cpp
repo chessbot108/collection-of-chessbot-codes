@@ -50,7 +50,7 @@ void dfs(int cur, int dep){
   pre[++pre_ind] = cur;
   vis[cur] = true;
   height[cur] = dep;
-  for (int i=0; i<dep; i++) printf("|   "); printf("cur %d\n", cur);
+  //for (int i=0; i<dep; i++) printf("|   "); printf("cur %d\n", cur);
   for(int x : adj[cur]){
     if(!par[x] && x - 1) par[x] = cur;
     dfs(x, dep + 1);
@@ -121,29 +121,33 @@ void make_pst(){
   root[0] = 0;
   
   for(int i = 0; i<n; i++){
-    srt[i] = arr[i - 1];
+    srt[i] = arr[i + 1];
   }
   sort(srt, srt + n);
-  
+  /** 
+  for(int i = 0; i<n; i++) printf("%d ", srt[i]);
+  puts("");
+  **/
   for(int j = 1; j<=n; j++){
     int i =  pre[j];
     root[i] = root[par[i]];
+    //printf("par[%d] = %d, arr[%d] = %d which is hashed to %d\n", i, par[i], i, arr[i], get_ind(arr[i]));
     U(get_ind(arr[i]), root[i], 0, s);
   }
-   
+  /** 
   for(int i = 0; i <= n; i++){
-    printf("version %d and par[i] = %d\n", i, par[i]);
+    printf("version %d and par[i] = %d\n", pre[i], par[pre[i]]);
     for(int j = 0; j<n; j++)
       printf("%d ", S(j, root[pre[i]], 0, s));
     puts("");
   }
-  
+  **/
 }
 
 int Q(int k1, int k2, int lca, int p_lca, int kth, int L, int R){
   if(L + 1 == R) return srt[L];
   int mid = (L + R) / 2, dis = (sum[lc[k1]] + sum[lc[k2]]) - (sum[lc[lca]] + sum[lc[p_lca]]);
-  printf("%d + %d - %d + %d = %d, and kth is %d\n", sum[lc[k1]], sum[lc[k2]], sum[lc[lca]], sum[lc[p_lca]], dis, kth);
+  //printf("%d + %d - %d + %d = %d, and kth is %d\n", sum[lc[k1]], sum[lc[k2]], sum[lc[lca]], sum[lc[p_lca]], dis, kth);
   if(dis > kth){
     return Q(lc[k1], lc[k2], lc[lca], lc[p_lca], kth, L, mid);
   }else{
@@ -174,7 +178,7 @@ int main(){
     int a, b, c;
     scanf("%d%d%d", &a, &b, &c);
     int lca = LCA(a, b); assert(lca);
-    printf("LCA(%d, %d) = %d. par[lca] = %d\n", a, b, lca, par[lca]);
+    //printf("LCA(%d, %d) = %d. par[lca] = %d\n", a, b, lca, par[lca]);
     printf("%d\n", Q(root[a], root[b], root[lca], root[par[lca]], c - 1, 0, s));
   }
 
