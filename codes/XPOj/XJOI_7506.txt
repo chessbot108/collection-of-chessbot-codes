@@ -1,0 +1,82 @@
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <queue>
+#include <set>
+#include <string>
+#include <list>
+#include <fstream>
+
+#define cont continue
+#define int_max 0x3f3f3f3f
+#define byte_max 0x3f
+#define max_v 10100
+using namespace std;
+
+
+vector<pair<long long, pair<int, int>>> edges;
+long long dist[max_v];
+int V, E;
+
+bool bellman_ford(int src){
+	
+	for(int i = 0; i<V+ 10; i++){
+		dist[i] = 1e17;
+	}
+	
+	
+	dist[src] = 0;
+	for(int k = 0; k<V - 1; k++){
+		for(int i = 0; i<E; i++){
+			int u = edges[i].second.first, v = edges[i].second.second;
+			long long w = edges[i].first;
+			if(dist[u] == dist[0]) cont;
+			dist[v] = min(dist[v], dist[u] + w);
+		}
+	}
+	
+	for(int i = 0; i<E; i++){
+		int u = edges[i].second.first, v = edges[i].second.second;
+		long long w = edges[i].first;
+		if(dist[v] != dist[0] && dist[v] > dist[u] + w)
+			return false; 
+	}
+	return true;
+}
+
+
+int main() {
+  	cin >> V >> E;
+  	for(int i = 0; i<E; i++){
+  		long long w;
+  		int u, v;
+  		cin >> u >> v >> w;
+  		edges.push_back(make_pair(w, make_pair(u, v)));
+	}
+  	
+  	if(!bellman_ford(1)){
+  		cout << "Error!";
+	}else{
+		for(int i = 1; i<=V; i++){
+			if(dist[i] == dist[0]){
+				cout << "inf ";
+			}else{
+				cout << dist[i] << " ";
+			}
+		}
+	}
+  	
+  	
+  	
+  	return 0;
+}
+
+
