@@ -18,7 +18,11 @@
 //#include <unordered_set>
 #include <functional>
 
+<<<<<<< HEAD
 #define max_v 1100
+=======
+#define max_v 210000
+>>>>>>> chessbot108-patch-17
 #define LOGN 50
 #define int_max 0x3f3f3f3f
 #define cont continue
@@ -36,6 +40,7 @@ void setIO(const string& file_name){
 	freopen((file_name+".out").c_str(), "w+", stdout);
 }
 
+<<<<<<< HEAD
 vector<pair<int, int> > points;
 vector<pair<int, int> > events; //first is coor, second is which segment it coorisponds too
 
@@ -44,6 +49,56 @@ int add[max_v], sum[max_v], max[max_v];
 
 int main(){
 	
+=======
+vector<pair<int, int> > cows, srt;
+int BIT[max_v], ans[max_v], same[max_v], n;
+
+int S(int k){
+  if(!k) return 0;
+  return BIT[k] + S(k - lsb(k));
+}
+
+void U(int k){
+  if(k >= max_v) return ;
+  BIT[k]++;
+  U(k + lsb(k));
+}
+
+int get_ind(const pair<int, int>& key) { return lower_bound(srt.begin(), srt.end(), key) - srt.begin();}
+
+int main(){
+	while(scanf("%d", &n)){
+    if(!n) break;
+    memset(same, 0, sizeof(same));
+    memset(BIT, 0, sizeof(BIT));
+    memset(ans, 0, sizeof(ans));
+    cows.clear(); srt.clear();
+
+    for(int i = 0; i<n; i++){
+      int x, y;
+      scanf("%d%d", &x, &y);
+      cows.push_back(make_pair(x, 100001 - y));
+      srt.push_back(make_pair(x, 100001 - y));
+    }
+
+    sort(srt.begin(), srt.end());
+
+    for(int i = 0; i<n; i++){
+      ans[i] = S(srt[i].second + 1) - same[get_ind(srt[i])];
+      U(srt[i].second + 1);
+      same[get_ind(srt[i])]++;
+    }
+    
+    for(int i = 0; i<n; i++){
+      printf("%d ", ans[get_ind(cows[i])]);
+    }
+    puts("");
+
+
+  }
+  
+
+>>>>>>> chessbot108-patch-17
 	return 0;
 }
 
