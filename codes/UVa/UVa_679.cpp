@@ -12,16 +12,23 @@
 #include <set>
 #include <sstream>
 #include <list>
+#include <queue>
+#include <stack>
 //#include <unordered_map>
 //#include <unordered_set>
 #include <functional>
 
 #define max_v 1100
+#define LOGN 50
 #define int_max 0x3f3f3f3f
 #define cont continue
 #define byte_max 0x3f
-#define pow_2(n) (1 << n)
-
+#define pow_2(n) (1 << (n))
+//tree
+#define lsb(n) ((n)&(-(n)))
+#define LC(n) (((n) << 1) + 1)
+#define RC(n) (((n) << 1) + 2)
+#define LOG2(n) ((int)(ceil(log2((n)))))
 using namespace std;
 
 void setIO(const string& file_name){
@@ -29,32 +36,26 @@ void setIO(const string& file_name){
 	freopen((file_name+".out").c_str(), "w+", stdout);
 }
 
-multiset<long long> ms;
+
+int solve(int D, int I){
+  if(!D || !I) return 0;
+  if(D&1) return pow_2(I - 1) + solve(D >> 1, I - 1);
+  else return solve(D >> 1, I - 1);
+}
+
 
 int main(){
-	
-  int q;
-  scanf("%d", &q);
-  while(q--){
-    int com;
-    long long a;
-    scanf("%d%lld", &com, &a);
-    if(com <= 0) break; //debug
-    if(com == 1){
-      ms.insert(a);
-    }else if(com == 2){
-      ms.erase(ms.lower_bound(a));
-    }else if(com == 5){
-      auto it = ms.lower_bound(a);
-      it--;
-      printf("%lld\n", *it);
-    }else if(com == 6){
-      auto it  = ms.lower_bound(a + 1LL);
-      printf("%lld\n", *it);
-    }
+  int l;
+  scanf("%d", &l);
+  while(l--){
+    int D, I;
+    scanf("%d%d", &D, &I);
+    I--;
+    printf("%d\n", pow_2(D - 1) + solve(I, D - 1));
   }
-
-
+  
+  scanf("%d", &l);
+  assert(!(~l));
 
 	return 0;
 }
