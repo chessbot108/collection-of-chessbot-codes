@@ -41,12 +41,57 @@ bool start[max_v]; //a match starts there
 int pi[max_v];
 void precomp(){
   int m = strlen(pat);
-
+  memset(pi, 0, sizeof(pi));
+  int k = 0;
+  for(int i = 2; i<m; i++){
+    printf("case %d\narr[i] == %c\nby default k = %d\nk changes from:", i, pat[i], k);
+    while(k && pat[k + 1] != pat[i]){
+      printf("\t%d -> %d\n", k, pi[k]);
+      k = pi[k];
+    }
+    if(pat[k + 1] == pat[i]){
+      k++;
+    }
+    printf("\tk ends at %d\n", k);
+    pi[i] = k;
+    puts("");
+  }
 }
 
+void KMP(){
+  int n = strlen(str);
+  int m = strlen(pat);
+  memset(start, 0, sizeof(start));
+  precomp();
+  int k = 0;
+  for(int i = 2; i<n; i++){
+    while(k && str[i] != pat[k + 1]){
+      k = pi[k];
+    }
+    if(pat[k + 1] == str[i]){
+      k++;
+    }
+    if(k == m){
+      start[i - (m - 1)] = true;
+      k = pi[k];
+    }
+
+  }
+}
 
 int main(){
-	
+	scanf("%s%s", str, pat);
+  KMP();
+  int m = strlen(pat);
+  int n = strlen(str);
+  for(int i = 0; i<m; i++){
+    printf("%d\n", pi[i]);
+  }
+  for(int i = 0; i<n; i++){
+    if(start[i]){
+      printf("occ starts %d\n", i + 1);
+    }
+  }
 	return 0;
 }
 
