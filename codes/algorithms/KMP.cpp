@@ -49,19 +49,36 @@ void shift(int n, char s[]){
 }
 
 void precomp(){
+  memset(pi, 0, sizeof(pi));
   pi[0] = -1;
   int k = 0;
   for(int i = 1; i<=m; i++){
-    k = i - 1;
+    k = pi[i - 1];
     while(k >= 0 && pat[k + 1] != pat[i]){
       k = pi[k];
     }
     pi[i] = ++k;
-    printf("%d\n", pi[i]);
   }
 
 }
 
+void kmp(){
+  precomp();
+  int k = 0;
+  memset(start, 0, sizeof(start));
+
+  for(int i = 1; i<=n; i++){
+    while(k >= 0 && pat[k + 1] != str[i]){
+      k = pi[k];
+    }
+    if(pat[k + 1] == str[i]) k++;
+    if(k == m){
+      start[i - m + 1] = true;
+      k = pi[k];
+    }
+  }
+
+}
 
 int main(){
   scanf("%s%s", str, pat);
@@ -69,6 +86,14 @@ int main(){
   m = strlen(pat);
   shift(n, str);
   shift(m, pat);
-  precomp();
+  
+  kmp();
+  
+  for(int i = 1; i<=n; i++){
+    if(start[i]){
+      printf("starts at pos %d\n", i);
+    }
+  }
+
   return 0;
 }
