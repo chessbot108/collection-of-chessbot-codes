@@ -1,3 +1,4 @@
+//code by weiming
 #include <iostream>
 #include <cstdio>
 #include <cstring>
@@ -31,11 +32,22 @@
 #define LOG2(n) ((int)(ceil(log2((n)))))
 using namespace std;
 
+void setIO(const string& file_name){
+	freopen((file_name+".in").c_str(), "r", stdin);
+	freopen((file_name+".out").c_str(), "w+", stdout);
+}
+
+
 int main(){
-  srand(time(0));
-  int n = rand() % 2;
-  if(n) printf("Alif");
-  else printf("yww");
+  int n;
+  scanf("%d", &n);
+  int ans = 0;
+  while(n){
+    ans *= 10;
+    ans += n%10;
+    n /= 10;
+  }
+  printf("%d", ans);
 	return 0;
 }
 
