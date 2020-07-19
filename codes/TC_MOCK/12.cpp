@@ -1,4 +1,5 @@
-//we don't talk about this one. thomas's fault
+//code by weiming
+//note: 8/10 cases during the test
 #include <iostream>
 #include <cstdio>
 #include <cstring>
@@ -59,7 +60,7 @@ int main(){
     scanf("%d", &arr[i]);
   }
   int ind = lower_bound(arr, arr + n, m) - &arr[0];
-  if(ind < n) printf("%d", ind + 1);
+  if(arr[ind] == m) printf("%d", ind + 1);
   else printf("0");
 	return 0;
 }
