@@ -53,6 +53,10 @@ int main(){
 
   make_scc();
   
+  for(int i = 1; i<=n; i++){
+    printf("%d -> %d\n", i, rep[i]);
+  }
+
 	return 0;
 }
 
