@@ -1,58 +1,61 @@
-//code by aaron. we never submitted it
-#include <bits/stdc++.h>
-#define MAXN 110000
+
+//code by daniel. done after the test
+#include <iostream>
+#include <vector>
+#include <cstdio>
+#include <algorithm>
+
 using namespace std;
+
+#define maxn 100010
+
 int n, m;
-vector<int> ar[MAXN];
+vector<int> v[maxn];
 
-bool visited[MAXN];
-
-
-int dfs(int a, int depth)
-{
-  int g = 0;
-  visited[a] = true;
-  for(int x : ar[a])
-  {
-    if(!visited[x])
-      g = max(g, dfs(x, depth + 1));
-  }
-  return g;
+vector<int> traverse(vector<int> path, int ind){
+    path.push_back(ind);
+    if(v[ind].size() == 0){
+        return path;
+    }
+    
+    vector<int> longest = path;
+    for(int i = 0; i < v[ind].size(); i++){
+        int next = v[ind][i];
+        if(find(path.begin(), path.end(), next) == path.end()){
+            vector<int> comp = traverse(path, next);
+            if(comp.size() > longest.size()){
+                longest = comp;
+            }
+        }
+    }
+    return longest;
 }
 
-int main() {
-
-  cin >> n >> m;
-  int a, b;
-  for(int i = 0; i < m; i++)
-  {
-    scanf("%d%d", &a, &b);
-    ar[a].push_back(b);
-    ar[b].push_back(a);
-  }
-
-  int cur = 0x3f3f3f3f;
-  vector<int> v;
-  for(int i = 1; i <= n; i++)
-  {
-    memset(visited, 0, sizeof(visited));
-    int g = dfs(i, 0);
-    if(g < cur)
-    {
-      v.clear();
-      cur = g;
-      v.push_back(i);
+void find_median(){
+    vector<int> empty;
+    vector<int> path;
+    path = traverse(empty, 1);
+    int a = path[path.size()-1];
+    path = traverse(empty, a);
+    if(path.size()%2 == 0){
+        int x = path[(path.size()-1)/2];
+        int y = path[path.size()/2];
+        printf("%d %d\n", min(x, y), max(x, y));
     }
-    else if(g == cur)
-    {
-      v.push_back(i);
+    else{
+        int x = path[path.size()/2];
+        printf("%d", x);
     }
-  }
+    return;
+}
 
-
-  for(int x : v)
-  {
-    printf("%d ", x);
-  }
-  cout << endl;
+int main(){
+    scanf("%d %d", &n, &m);
+    for(int i = 0; i < m; i++){
+        int a, b; scanf("%d %d", &a, &b);
+        v[a].push_back(b);
+        v[b].push_back(a);
+    }
+    find_median();
+    return 0;
 }
