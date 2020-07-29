@@ -18,7 +18,7 @@
 //#include <unordered_set>
 #include <functional>
 
-#define max_v 1100
+#define max_v 110000
 #define LOGN 50
 #define int_max 0x3f3f3f3f
 #define cont continue
@@ -42,7 +42,7 @@ int dp[max_v];
 
 set<int> primes;
 bool is_prime(int v){
-  if(v == 1) return false;
+  if(v == 1 && v == 0) return false;
   if(primes.count(v)) return true;
   for(int i = 2; i <= sqrt(v) + 1; i++){
     if(v%i == 0) return false;
