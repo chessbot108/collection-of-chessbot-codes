@@ -7,20 +7,9 @@
 #include <cmath>
 #include <cassert>
 #include <algorithm>
-#include <vector>
-#include <string>
-#include <map>
-#include <set>
-#include <sstream>
-#include <list>
-#include <queue>
-#include <stack>
-//#include <unordered_map>
-//#include <unordered_set>
-#include <functional>
- 
+#include <vector> 
+
 #define max_v 110000
-#define LOGN 50
 #define int_max 0x3f3f3f3f
 #define cont continue
 #define byte_max 0x3f
