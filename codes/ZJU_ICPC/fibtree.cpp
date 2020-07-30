@@ -8,37 +8,17 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <map>
-#include <set>
-#include <sstream>
-#include <list>
-#include <queue>
-#include <stack>
-//#include <unordered_map>
-//#include <unordered_set>
-#include <functional>
 #include <utility>
 
 #define max_v 100100
-#define LOGN 50
 #define int_max 0x3f3f3f3f
 #define cont continue
-#define byte_max 0x3f
 #define pow_2(n) (1 << (n))
 //tree
-#define lsb(n) ((n)&(-(n)))
-#define LC(n) (((n) << 1) + 1)
-#define RC(n) (((n) << 1) + 2)
-#define LOG2(n) ((int)(ceil(log2((n)))))
 #define u second.first
 #define v second.second
 #define w first
 using namespace std;
-
-void setIO(const string& file_name){
-	freopen((file_name+".in").c_str(), "r", stdin);
-	freopen((file_name+".out").c_str(), "w+", stdout);
-}
 
 vector<pair<int, pair<int, int> > > edges;
 int parent[max_v], fib[max_v];
@@ -60,7 +40,6 @@ void Union(int x, int y){
   parent[x] = y;
 }
 
-
 void make_DSU(){
   for(int i = 0; i <=n; i++) parent[i] = i;
 }
@@ -76,7 +55,6 @@ int kruskal(){
       total += x.w; 
       Union(x.u, x.v);
       cnt++;
-      //printf("%d: %d %d %d\n", cnt, x.u, x.v, x.w);
     }
   }
   //assert(cnt == n - 1);
@@ -107,7 +85,6 @@ int main(){
     printf("No");
     return 0;
   }
-  //printf("%d %d\n", mini, maxi);
   fib[1] = 1;
   fib[0] = 1;
   int i = 2;
@@ -117,13 +94,10 @@ int main(){
     i++;
   }
   bool ans = false;
-  for(int j = 0; j<i; j++){
+  for(int j = 0; j<i; j++)
     if(fib[j] >= mini && fib[j] <= maxi) ans = true;
-  }
 
   if(ans) printf("Yes");
   else printf("No");
-
 	return 0;
 }
-
