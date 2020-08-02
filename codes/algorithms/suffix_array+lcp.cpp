@@ -6,67 +6,56 @@
 #include <cmath>
 #include <cassert>
 #include <algorithm>
-#include <vector>
-#include <string>
-#include <map>
-#include <set>
-#include <sstream>
-#include <list>
-#include <queue>
-#include <stack>
-//#include <unordered_map>
-//#include <unordered_set>
-#include <functional>
 
-#define max_v 110000
-#define LOGN 50
-#define int_max 0x3f3f3f3f
+#define max_v 1100000
 #define cont continue
-#define byte_max 0x3f
 #define pow_2(n) (1 << (n))
-//tree
-#define lsb(n) ((n)&(-(n)))
-#define LC(n) (((n) << 1) + 1)
-#define RC(n) (((n) << 1) + 2)
-#define LOG2(n) ((int)(ceil(log2((n)))))
+
 using namespace std;
 
-void setIO(const string& file_name){
-	freopen((file_name+".in").c_str(), "r", stdin);
-	freopen((file_name+".out").c_str(), "w+", stdout);
+char str[max_v];
+int sa[max_v], rk[max_v], buckets[max_v], lcp[max_v]; //using buckets for readability
+int tmp[max_v], pos[max_v];
+
+void print_arr(int n, int * arr){
+  for(int i = 1; i<=n; i++) printf("%d ", arr[i]);
+  puts("");
+}
+
+void comp_SA(){
+  int n = strlen(str + 1), mx = 260;
+  for(int i = 1; i<=n; i++){
+    sa[i] = i;
+    rk[i] = str[i];
+  }
+
+  for(int i = 1; i >> 1 < n; i <<= 1){
+    int k = i >> 1, p = k;
+    for(int j = 1; j<=k; j++) buckets[j] = n - (j - 1);
+    for(int j = 1; j<=n; j++) if(sa[j] > k) buckets[++p] = sa[j] - k;
+    memset(pos, 0, sizeof(pos));
+    for(int j = 1; j<=n; j++) pos[rk[j]]++;
+    for(int j = 1; j<=mx; j++) pos[j] += pos[j - 1];
+    for(int j = n; j; j--) sa[pos[rk[buckets[j]]]--] = buckets[j];
+    for(int j = 1; j<=n; j++) tmp[sa[j]] = tmp[sa[j - 1]] + (rk[sa[j]] != rk[sa[j - 1]] || rk[sa[j] + k] != rk[sa[j - 1] + k]);
+    for(int j = 1; j<=n; j++) rk[j] = tmp[j];
+    mx = rk[sa[n]];
+    if(mx == n) break; //optimization to help run faster on 'sparser strings'
+  }
+  //this passed luogu sample problem. so it's all good
 }
 
 
-/**
- * the suffix array is split into 2 parts.
- * sorting the suffixes and computing the lcp
- * then it's rmq with sparse table. :/
- * 
- * i'll be following teacher's template code for this.
- * i get the alg, but the code will be hard
- *
- * sorting will be with binary lifting and radix sort
- *  so the string will be partitioned by each character,
- *  the i will find the rank of each character
- *  then every substring of in the string will be formed by 2 characters, 
- *  i can sort the substring by the order of the characters
- *  and so on for subtrings length 4
- *  instead of checking all 4 characters, i will compare the ranking of the 
- *  2 size 2 substrings it consists of
- *
- *  and since the ranking will be less than n, i can radix sort on it1
- *
- *  making an n log n sorting alg
- * 
- *  the proof for lcs is too long to write here. :/
-**/
 
-char str[max_v];
-int sa[max_v], tmp[max_v], rank[max_v], buckets[max_v], lcp[max_v]; //using buckets for readability
+
+
 
 
 int main(){
-	
+  scanf("%s", str + 1);
+  int n = strlen(str + 1);
+  comp_SA();
+  for(int i = 1; i<=n; i++) printf("%d ", sa[i]);
 	return 0;
 }
 
