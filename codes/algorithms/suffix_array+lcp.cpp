@@ -47,6 +47,13 @@ void comp_SA(){
 
 
 
+void make_lcs(){
+  //for(int i = 1; i<=n; i++){
+    //int lcp[rank[i]] = max(lcp[rk[i - 1]] - 1, 0);
+    //for(; str[i + lcp[rank[i]]] ==  str[sa[rank[i] - 1] + lcp[rank[i]]]; 
+  //}
+}
+
 
 
 
@@ -55,7 +62,7 @@ int main(){
   scanf("%s", str + 1);
   int n = strlen(str + 1);
   comp_SA();
-  for(int i = 1; i<=n; i++) printf("%d ", sa[i]);
+  for(int i = 1; i<=n; i++) printf("%d %d %d\n", sa[i], rk[i], sa[rk[i]]);
 	return 0;
 }
 
