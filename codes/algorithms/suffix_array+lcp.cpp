@@ -8,14 +8,15 @@
 #include <algorithm>
 
 #define max_v 1100000
+#define LOGN 50
 #define cont continue
 #define pow_2(n) (1 << (n))
-
+#define LOG2(n) ((int)(ceil(log2((n)))))
 using namespace std;
 
 char str[max_v];
 int sa[max_v], rk[max_v], buckets[max_v], lcp[max_v]; //using buckets for readability
-int tmp[max_v], pos[max_v];
+int tmp[max_v], pos[max_v], st[max_v * 2][LOGN], n;
 
 void print_arr(int n, int * arr){
   for(int i = 1; i<=n; i++) printf("%d ", arr[i]);
@@ -23,7 +24,7 @@ void print_arr(int n, int * arr){
 }
 
 void comp_SA(){
-  int n = strlen(str + 1), mx = 260;
+  int mx = 260;
   for(int i = 1; i<=n; i++){
     sa[i] = i;
     rk[i] = str[i];
@@ -47,22 +48,56 @@ void comp_SA(){
 
 
 
-void make_lcs(){
-  //for(int i = 1; i<=n; i++){
-    //int lcp[rank[i]] = max(lcp[rk[i - 1]] - 1, 0);
-    //for(; str[i + lcp[rank[i]]] ==  str[sa[rank[i] - 1] + lcp[rank[i]]]; 
-  //}
+void make_lcp(){
+  for(int i = 1; i<=n; i++){
+    lcp[rk[i]] = max(0, lcp[rk[i - 1]] - 1);
+    for(; str[i + lcp[rk[i]]] == str[sa[rk[i] - 1] + lcp[rk[i]]]; lcp[rk[i]]++); //clean and concise from teachers code
+  }//linear complexity. proving this was a massive pain
 }
 
+void rmq_precomp(){
+  memset(st, 0x3f, sizeof(st));
+  for(int i = 1; i<=n; i++) st[i][0] = lcp[i];
+  for(int j = 1; pow_2(j) <= n; j++){
+    for(int i = 1; i <= n; i++){
+      st[i][j] = min(st[i][j - 1], st[i + pow_2(j - 1)][j - 1]);
+    } 
+  }
+}
 
-
+int query(int a, int b){ //max prefix amoung suffix starting at a and suffix starting at b [a, b]
+  //printf("%d -> %d\n%d -> %d\n", a, rk[a] + 1, b, rk[b] + 1);
+  a = rk[a] + 1, b = rk[b] + 1;
+  if(a > b) swap(a, b);
+  int k = log2(b - a);
+  
+  assert(b - pow_2(k) >= 1);
+  return min(st[a][k], st[b - pow_2(k)][k]);
+}
 
 
 int main(){
   scanf("%s", str + 1);
-  int n = strlen(str + 1);
+  n = strlen(str + 1);
   comp_SA();
-  for(int i = 1; i<=n; i++) printf("%d %d %d\n", sa[i], rk[i], sa[rk[i]]);
+  make_lcp();
+  printf("i   rk  sa  lcp\n");
+  for(int i = 1; i<=n; i++) printf("%d   %d   %d   %d\n", sa[i], rk[sa[i]], sa[sa[i]], lcp[rk[sa[i]]]);
+  int q;
+  
+  for(int i = 1; i<=n; i++){
+    printf("%d ", i);
+    for(int j = i; j<=n; j++) printf("%c", str[j]);
+    puts("");
+  }
+  //assert(false);
+  rmq_precomp();
+  scanf("%d", &q);
+  while(q--){
+    int a, b;
+    scanf("%d%d", &a, &b);
+    printf("%d\n", query(a, b));
+  }
 	return 0;
 }
 
