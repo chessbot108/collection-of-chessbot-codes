@@ -18,7 +18,7 @@
 //#include <unordered_set>
 #include <functional>
 
-#define max_v 1100
+#define max_v 110000
 #define LOGN 50
 #define int_max 0x3f3f3f3f
 #define cont continue
@@ -38,7 +38,7 @@ void setIO(const string& file_name){
 
 
 int sa[max_v], rk[max_v], lcp[max_v], tmp[max_v], disc[max_v], srt[max_v], pos[max_v]; //disc needed :/
-int str[max_v], n, m, k;
+int str[max_v], n, m, K;
 
 void comp_SA(){
   int mx = m + 1;
@@ -71,31 +71,32 @@ void comp_LCP(){
 }
 
 bool check(int x){
-  assert(x);
-  for(int i = 1; i<=n; i++) tmp[i] = (lcp[i] >= x) ? lcp[i] : 0;
-  int maxi = 0, cnt = 0;
+  //printf("%d\n", x);
+  assert(x && x != n + 1);
+  int ans = 0, cnt = 1;
   for(int i = 1; i<=n; i++){
-    if(lcp[i] != 0){
-      cnt++;
-      maxi = max(maxi, cnt);
-    }else{
-      cnt = 0;
-    }
+    cnt = (lcp[i] >= x) ? cnt + 1 : 1;
+    //printf("%d ", cnt);
+    ans = max(ans, cnt);
   }
-  return maxi >= k;
+  //puts("");
+  return ans >= K;
 }
 
-int bin_search(int l, int r){
-  if(l >= r) return r - 1;
-  int mid = (l + r) / 2;
-  if(check(mid)){
-    return bin_search(
+int bin_search(int l, int r){ //[a, b)
+  if(l > r) return l - 1;
+  int mid = (l + r + 1) / 2;
+  //printf("%d %d %d\n", l, r, mid);
+  if(!check(mid)){
+    return bin_search(l, mid - 1);
+  }else{
+    return bin_search(mid + 1, r);
   }
 }
 
 
 int main(){
-	scanf("%d", &n);
+	scanf("%d%d", &n, &K);
   for(int i = 1; i<=n; i++){
     scanf("%d", &str[i]);
     str[i]++; //avoiding 0 for fenceposts and other things
@@ -114,10 +115,10 @@ int main(){
     //}
     //puts("");
   //}
-  //for(int i = 1; i<=n; i++) printf("%d %d %d\n", i, rk[i], sa[i]); puts("");
   comp_LCP(); //luckily no rmq needed
+  //for(int i = 1; i<=n; i++) printf("%d %d %d %d\n", i, rk[i], sa[i], lcp[i]); puts("");
 
-
+  printf("%d\n", bin_search(1, n));
   
   
 
