@@ -1,0 +1,9 @@
+checklist of things to do before sumbitting
+
+1. make sure it compiles and passes the sample
+2. make sure the maximum value in correct (e.g. max_v to 100000)
+3. make sure the correct header files are in
+4. make sure there are no missed edge cases
+5. make sure at least 2 members have confirmed the code works. if the problem is completely free, only 1 is needed
+
+be sure to follow these when testing and hopefully we can reduce our submission count and not lose 20 test cases on problem 12
