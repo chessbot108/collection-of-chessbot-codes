@@ -50,19 +50,14 @@ int main(){
   }
   
   for(int i = 0; i<n; i++){
-    //printf("t[%d] = %d, and it became", i, t[i]);
     while(occ[t[i]] >= l) t[i]++;//will be less than M
-    //printf("%d, with occ[t[i]] as %d\n", t[i], occ[t[i]]);
     for(int j = 0; j<m; j++){
       occ[t[i] + j]++;
     }
   } //O(n * m)
   
   int cnt = 0;
-  //for(int i = 0; i<n; i++) printf("%d ", t[i]); puts("");
   for(int i = t[0]; i<t[n - 1]; i++){
-    //printf("a");
-    //printf("%d\n", occ[i]);
     if(!occ[i]) cnt++;
   }
   printf("%d\n", cnt);
