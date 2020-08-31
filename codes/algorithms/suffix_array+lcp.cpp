@@ -64,7 +64,6 @@ void rmq_precomp(){
     } 
   }
 }
-
 int query(int a, int b){ //max prefix amoung suffix starting at a and suffix starting at b [a, b]
   //printf("%d -> %d\n%d -> %d\n", a, rk[a] + 1, b, rk[b] + 1);
   a = rk[a] + 1, b = rk[b] + 1;
