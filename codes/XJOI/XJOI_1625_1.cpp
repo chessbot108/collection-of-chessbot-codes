@@ -39,8 +39,8 @@ long long bin_pow(long long a, long long b){
 
 
 int main(){
-  freopen("poetry.in", "r", stdin);
-  freopen("poetry.out", "w+", stdout);
+  //freopen("poetry.in", "r", stdin);
+  //freopen("poetry.out", "w+", stdout);
 	scanf("%lld%lld%lld", &n, &m, &k);
   for(int i = 0; i<n; i++){
     scanf("%lld%lld", &s[i], &c[i]);
