@@ -73,7 +73,7 @@ int bin_search(int kth, int k1, int k2, int L, int R){
   if(L + 1 == R) return srt[L];
   assert(kth >= 0);
   int t = sum[lc[k2]] - sum[lc[k1]], mid = (L + R) / 2;
-  printf("%d %d %d %d %d %d %d\n", sum[k1], sum[k2], t, k1, k2, L, R);
+  //printf("%d %d %d %d %d %d %d\n", sum[k1], sum[k2], t, k1, k2, L, R);
   if(t < kth){
     return bin_search(kth  - t, rc[k1], rc[k2], mid, R); 
   }else{
@@ -95,7 +95,7 @@ void pre_process(){
 
   for(int i = 1; i<=n; i++){
     root[i] = root[i - 1];
-    U(get_index(arr[i - 1]), 1, 0, s);
+    U(get_ind(arr[i - 1]), 1, root[i], 0, s);
   }
 }
 
