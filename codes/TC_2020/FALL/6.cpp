@@ -1,42 +1,23 @@
-#include <iostream>
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
-#include <ctime>
-#include <cmath>
-#include <cassert>
-#include <algorithm>
-#include <vector>
-#include <string>
-#include <map>
-#include <set>
-#include <sstream>
-#include <list>
-#include <queue>
-#include <stack>
-//#include <unordered_map>
-//#include <unordered_set>
-#include <functional>
+//miles
 
-#define max_v 1100
-#define int_max 0x3f3f3f3f
-#define cont continue
-#define pow_2(n) (1 << (n))
-//tree
-#define lsb(n) ((n)&(-(n)))
-#define LC(n) (((n) << 1) + 1)
-#define RC(n) (((n) << 1) + 2)
-#define LOG2(n) ((int)(ceil(log2((n)))))
+#include <iostream>
+#include <string>
+#include <cstdio>
 using namespace std;
 
-void setIO(const string& file_name){
-	freopen((file_name+".in").c_str(), "r", stdin);
-	freopen((file_name+".out").c_str(), "w+", stdout);
+int main() {
+    int n, m;
+    scanf("%d%d",&n,&m);
+    int psum[n];
+    cin >> psum[0];
+    for(int i = 1; i < n; i++){
+        int a;
+        scanf("%d", &a);
+        psum[i] = psum[i-1]+a;
+    }
+    for(int i =0; i < m; i++){
+        int a;
+        scanf("%d", &a);
+        printf("%d\n",psum[a-1]);
+    }
 }
-
-
-int main(){
-	
-	return 0;
-}
-

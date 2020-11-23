@@ -1,3 +1,5 @@
+//me and daniel both failed, this is mine
+
 #include <iostream>
 #include <cstdio>
 #include <cstring>
