@@ -18,7 +18,7 @@
 //#include <unordered_set>
 #include <functional>
 
-#define max_v 1100
+#define max_v 220000
 #define LOGN 50
 #define int_max 0x3f3f3f3f
 #define cont continue
