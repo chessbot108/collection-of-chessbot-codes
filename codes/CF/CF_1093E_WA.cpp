@@ -41,7 +41,6 @@ void U(int a, int b, int val, int op){
 }
 
 int S(int a, int b, int op){
-    swap(a, b);
     int ans = 0;
     //cout << "sum of " << a << " " << b << " " << op << endl;
     for( ; a; a -= lsb(a)){
@@ -59,7 +58,7 @@ int S(int a, int b, int c, int d, int op){
     //sum of rectangle :/
     //[a, c]; [b, d]
     //cout << a << " " << b << " " << c << " " << d << " " << op << endl;
-    int sm = S(a, b, op), m1 = S(a, d, op), m2 = S(b, c, op), big = S(c, d, op);
+    int sm = S(a, b, op), m1 = S(a, d, op), m2 = S(c, b, op), big = S(c, d, op);
     //cout << sm << " " << m1 << " " << m2 << " " << big << endl;
     return (sm + big) - (m1 + m2);
 }
@@ -150,7 +149,7 @@ int main(){
         if(q[i].op - 1){
             U(q[i].x, q[i].y, 1);
         }else{
-            cout << S(q[i].l, q[i].r, q[i].l1, q[i].r1, 1) << endl;
+            cout << S(q[i].l, q[i].r, q[i].l1, q[i].r1, 1) << '\n';
         }
 
     }
