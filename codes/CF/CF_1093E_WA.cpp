@@ -19,7 +19,7 @@ struct query{
 vector<int> adj[max_v];
 vector<int> BIT[max_v];
 int n, m;
-int A[max_v], B[max_v], C[max_v], D[max_v], B2[max_v];
+int A[max_v], B[max_v], C[max_v], D[max_v], B2[max_v], D2[max_v];
 //A and B are the input, C is the inverse of A
 //so A[C[i]] == i and the same goes for D and B
 //B2 and D2 a one i use for simulating
@@ -41,17 +41,16 @@ void U(int a, int b, int val, int op){
 }
 
 int S(int a, int b, int op){
-    int ans = 0;
-    //cout << "sum of " << a << " " << b << " " << op << endl;
-    for( ; a; a -= lsb(a)){
-        for(int i = b; i; i -= lsb(i)){
-            if(op){ 
-                //cout << a << " " << i << " " << BIT[a][get_ind(a, i)] << endl;
-                ans += BIT[a][get_ind(a, i)];
-            }else adj[a].pb(i);
-        }
-    } 
-    return ans;
+   int ans = 0;
+   //if(op) cout << "sum of " << a << " " << b << endl;
+   for( ; a; a -= lsb(a)){
+       for(int i = b; i; i -= lsb(i)){
+           //if(op) cout << a << " " << i << endl;
+           if(op) ans += BIT[a][get_ind(a, i)];
+           else adj[a].pb(i);
+       }
+   } 
+   return ans;
 }
 
 int S(int a, int b, int c, int d, int op){
@@ -98,7 +97,7 @@ int main(){
 
     for(int i = 1; i<=n; i++){
         B2[i] = B[i];
-        U(C[i], D[i], 1, 0);
+        U(i, D[A[i]], 1, 0);
     }
 
     for(int i = 0; i<m; i++){
@@ -106,15 +105,14 @@ int main(){
         cin >> op;
         if(op == 1){
             int a, b, c, d;
-            cin >> a >> c >> b >> d;
+            cin >> a >> b >> c >> d;
+            swap(b, c); //magic
             a--, b--;
-            //swap(a, b); swap(c, d);
             q[i] = query(op, a, b, c, d);
             S(a, b, c, d, 0);
         }else{
             int a, b;
             cin >> a >> b;
-            if(a > b) swap(a, b);
             q[i] = query(op, a, b);
             U(a, b, 0);
         }
@@ -142,14 +140,14 @@ int main(){
     cout << endl << endl;
     **/
     for(int i = 1; i<=n; i++){     
-        U(C[i], D[i], 1, 1);
+        U(i, D[A[i]], 1, 1);
     }
 
     for(int i = 0; i<m; i++){
         if(q[i].op - 1){
             U(q[i].x, q[i].y, 1);
         }else{
-            cout << S(q[i].l, q[i].r, q[i].l1, q[i].r1, 1) << '\n';
+            cout << S(q[i].l, q[i].r, q[i].l1, q[i].r1, 1) << endl;
         }
 
     }
