@@ -41,14 +41,14 @@ void solve(){
     
     while(L > l)
       if(!(occ[arr[--L]]++)) res++;
- 
+
  
     while(R > r)
       if(!(--occ[arr[R--]])) res--;
     
     while(R < r)
       if(!(occ[arr[++R]]++)) res++;
- 
+
     //assert(res >= 0);
     ans[q[i].ind] = res;
  

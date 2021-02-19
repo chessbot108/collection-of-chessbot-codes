@@ -6,14 +6,14 @@
 #define RC(n) (((n) << 1) + 2)
 #define ll long long
 using namespace std;
-const int LOGN = 20, max_v = (1 << LOGN)*4;
-
+const int LOGN = 18, max_v = (1 << LOGN)*4;
+ 
 ll sum[max_v], set[max_v], arr[max_v], add[max_v], lz[max_v];
 int n, q, s = 1;
 ll Q(int k, int L, int R){
-    return (ll)(R - L)*add[k] + (lz[k]) ? set[k] * (ll)(R - L) : sum[k];
+    return (ll)(R - L)*add[k] + ((lz[k]) ? set[k] * (ll)(R - L) : sum[k]);
 }
-
+ 
 void push_down(int k, int L, int R){
     if(L + 1 == R) return ;
     if(lz[k]){
@@ -28,7 +28,7 @@ void push_down(int k, int L, int R){
     add[k] = 0ll;
     sum[k] = Q(LC(k), L, mid) + Q(RC(k), mid, R); 
 }
-
+ 
 void U(int qL, int qR, int op, ll val, int k, int L, int R){
     if(qR <= L || R <= qL || R <= L) return ;
     if(qL <= L && R <= qR){
@@ -47,7 +47,7 @@ void U(int qL, int qR, int op, ll val, int k, int L, int R){
     U(qL, qR, op, val, RC(k), mid, R);
     sum[k] = Q(LC(k), L, mid) + Q(RC(k), mid, R);
 }
-
+ 
 ll S(int qL, int qR, int k, int L, int R){
     if(qR <= L || R <= qL || R <= L) return 0ll;
     if(qL <= L && R <= qR) return Q(k, L, R);
@@ -55,7 +55,7 @@ ll S(int qL, int qR, int k, int L, int R){
     int mid = (L + R)/2;
     return S(qL, qR, LC(k), L, mid) + S(qL, qR, RC(k), mid, R);
 }
-
+ 
 void make_tree(){
     for(int i = s - 1; i<s + n - 1; i++){
         sum[i] = arr[i - (s - 1)];
@@ -69,6 +69,7 @@ int main(){
     cin.tie(0) -> sync_with_stdio(0);
     cin >> n >> q;
     while(s <= n) s *= 2;
+    assert(s <= (1 << LOGN));
     for(int i = 0; i<n; i++){
         cin >> arr[i];
     }
