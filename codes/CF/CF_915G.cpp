@@ -31,15 +31,9 @@ void setIO(const string& file_name){
 	freopen((file_name+".in").c_str(), "r", stdin);
 	freopen((file_name+".out").c_str(), "w+", stdout);
 }
-ll m[max_v], low[max_v], vis[max_v], BIT[max_v], fac[max_v];
-ll freq[max_v], p[max_v], n, k, ans[max_v], contr[max_v];
-//this'll hurt my brain for sure
-//mew(1) is 1
-//mew(2) is -1
-//mew(3) is -1
-//mew(6) is 1
-//hopefully this'll work for my brick of a brain
 
+ll m[max_v], low[max_v], vis[max_v], fac[max_v];
+ll p[max_v], n, k, ans[max_v], contr[max_v];
 ll bin_pow(ll a, ll b){
   ll ans = 1ll;
   for(ll i = 0; pow_2(i) <= b; i++){
@@ -51,17 +45,17 @@ ll bin_pow(ll a, ll b){
   return ans;
 } 
 
-ll S(int k, ll A){ return (!k) ? A%mod : S(k - lsb(k), A + BIT[k]);}
-void U(int k, ll val){ for(; k <=n; k += lsb(k)) BIT[k] += val;}
 
 
 int main(){
 	cin.tie(0) -> sync_with_stdio(0);
   low[1] = mod; //1 -> 0 for a better progression
-  m[1] = 1;
+  m[1] = p[1] = 1;
   //seive for primes, low[i] is the smallest prime that divides i
   for(int i = 2; i<=2e6; i++){
     if(vis[i]) cont;
+    low[i] = i;
+    if((ll)i*(ll)i > 2e6) cont;
     for(int j = i; j<=2e6; j += i){
       if(!vis[j]) low[j] = i;
       vis[j] = 1;
@@ -69,16 +63,17 @@ int main(){
   }
   //compute m, or mobius's function
   for(int i = 2; i <=2e6; i++){
+    assert(low[i]);
     if(low[i] == i) m[i] = -1;
     else if((i/low[i])%low[i] == 0) m[i] = 0;
     else m[i] = m[i/low[i]] * -1;
-    //if(i <= 100) cout << i << ' ' << m[i] << '\n';
   }
 
   cin >> n >> k;
   //compute each i^n
-  for(int i = 1; i<=k; i++){
-    p[i] = bin_pow((ll)i, n); 
+  for(int i = 2; i<=k; i++){
+    if(low[i] == i) p[i] = bin_pow(i, n);
+    else p[i] = mul(p[low[i]], p[i/low[i]]);
   }
   ll tot = 0ll;
   
