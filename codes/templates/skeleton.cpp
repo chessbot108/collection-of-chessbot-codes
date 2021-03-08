@@ -79,3 +79,4 @@ int main(){
 	return 0;
 }
 
+/Users/weiming.zhou/.vim/templates/skeleton.cpp
