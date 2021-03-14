@@ -118,10 +118,7 @@ int main(){
   decomp(1, 1);
   //moo("precomp don\n");
   
-  for(int i = 1; i<=n; i++){
-    U(trav[i], arr[i], 0, 0, s);
-  }
-
+  
   for(int i = s - 1; i < (s + n - 1); i++){
     st[i] = arr[ord[i - (s - 1)]];
   }

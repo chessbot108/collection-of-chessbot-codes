@@ -1,95 +1,100 @@
 #include <iostream>
+#include <cstdio>
 #include <cstring>
-#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
+#include <cassert>
 #include <algorithm>
-#define max_v 220000
+#include <vector>
+#include <random>
+#include <chrono>
+
 #define cont continue
+#define pow2(n) (1 << (n))
+#define ll long long
+#define pii pair<int, int>
 #define pb push_back
+#define mp make_pair
+#define lsb(n) ((n)&(-(n)))
+#define LC(n) (((n) << 1) + 1)
+#define RC(n) (((n) << 1) + 2)
+#define add(a, b) (((a)%mod + (b)%mod)%mod)
+#define mul(a, b) (((a)%mod * (b)%mod)%mod)
+#define init(arr, val) memset(arr, val, sizeof(arr))
+//geniousity limit exceeded
+#define moo printf
+#define oom scanf
+const ll mod = 1e9 + 7;
+const int MX = 2e5 +10, int_max = 0x3f3f3f3f;
 using namespace std;
 
-const int SQRT = 500;
+void setIO(const string& file_name){
+	freopen((file_name+".in").c_str(), "r", stdin);
+	freopen((file_name+".out").c_str(), "w+", stdout);
+}
 
-struct query{
-  int l, r, ind;
-  query(){}
+int arr[MX], srt[MX], trav[MX*2], BIT[MX *2], occ[MX], L[MX], R[MX], ans[MX], n, ind;
+vector<int> adj[MX];
 
-  bool operator <(const query& b) const{
-    return (l/SQRT != b.l/SQRT) ? l < b.l : r < b.r;
-  }
-
-} q[max_v];
-
-int arr[max_v], srt[max_v], occ[max_v], l[max_v], r[max_v], ord[max_v * 2], ans[max_v], trav[max_v];
-int n, ind = -1;
-vector<int> adj[max_v];
+int S(int k){ return (!k) ? 0 : BIT[k] + S(k - lsb(k)); }
+void U(int k, int val){ for(; k<=n*2; k += lsb(k)) BIT[k] += val; }
 
 void dfs(int u, int p){
-  ord[++ind] = u;
-  l[u] = ind;
-  for(int v : adj[u])
+  trav[++ind] = u;
+  L[u] = ind;
+  for(int v : adj[u]){
     if(v != p)
       dfs(v, u);
-
-  r[u] = ind;
-}
-
-void solve(){
-  int L = 0, R = -1, res = 0;
-
-  for(int i = 0; i<n; i++){
-    int l = q[i].l, r = q[i].r;
-    
-    while(L < l)
-      if(!(--occ[trav[L++]])) res--;
-    
-    while(L > l)
-      if(!(occ[trav[--L]]++)) res++;
- 
- 
-    while(R > r)
-      if(!(--occ[trav[R--]])) res--;
-    
-    while(R < r)
-      if(!(occ[trav[++R]]++)) res++;
-    
-    ans[q[i].ind] = res;
   }
-
+  trav[++ind] = -u;
+  R[u] = ind;
 }
+
 
 
 int main(){
-  cin >> n;
+  cin.tie(0) -> sync_with_stdio(0);
+  mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
   
-  for(int i = 0; i<n; i++){
-    cin >> arr[i];
-    srt[i] = arr[i];
+  oom("%d", &n);
+  for(int i = 1; i<=n; i++){
+    oom("%d", &arr[i]);
   }
-
+  
   for(int i = 1; i<n; i++){
-    int a, b;
-    cin >> a >> b;
-    a--, b--;
+    int a, b; oom("%d%d", &a, &b);
     adj[a].pb(b);
     adj[b].pb(a);
-  }
-  
-  dfs(0, -1);
+  } 
+    
+  for(int i = 1; i<=n; i++) srt[i] = arr[i];
   sort(srt, srt + n);
-  for(int i = 0; i<n; i++){
-    q[i].l = l[i];
-    q[i].r = r[i];
-    q[i].ind = i;
-    arr[i] = lower_bound(srt, srt + n, arr[i]) - &srt[0];
-    trav[i] = arr[ord[i]];
+  for(int i = 1; i<=n; i++) arr[i] = 1 + lower_bound(srt, srt + n, arr[i]) - &arr[0];
+  
+  dfs(1, 0);
+  
+  for(int i = 1; i<=n*2; i++) moo("%3d", trav[i]); puts("");
+
+  for(int i = 1; i<=n*2; i++){
+    int u = trav[i];
+    if(u > 0){ //left endpoint
+      if(occ[arr[u]]){
+        U(occ[arr[u]], -1);
+      }
+      U(i, 1);
+      occ[arr[u]] = i; 
+    }else{ //right side
+      u = -u;
+      ans[u] = S(R[u]) - S(L[u] - 1);
+    }
+  } 
+  
+  for(int i = 1; i<=n; i++){
+    moo("%d ", ans[i]);
   }
-
-  sort(q, q + n);
-  solve();
-  for(int i = 0; i<n; i++){
-    cout << ans[i] << ' ';
-  }
-
-
-  return 0;
+  puts("");
+	return 0;
 }
+
+
