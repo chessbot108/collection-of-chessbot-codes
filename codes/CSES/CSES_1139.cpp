@@ -37,7 +37,7 @@ void setIO(const string& file_name){
 int arr[MX], srt[MX], trav[MX*2], BIT[MX *2], occ[MX], L[MX], R[MX], ans[MX], n, ind;
 vector<int> adj[MX];
 
-int S(int k){ return (!k) ? 0 : BIT[k] + S(k - lsb(k)); }
+int S(int k, int T = 0){ return (!k) ? T : S(k - lsb(k), BIT[k] + T);}
 void U(int k, int val){ for(; k<=n*2; k += lsb(k)) BIT[k] += val; }
 
 void dfs(int u, int p){
@@ -67,14 +67,14 @@ int main(){
     adj[a].pb(b);
     adj[b].pb(a);
   } 
-    
+  
   for(int i = 1; i<=n; i++) srt[i] = arr[i];
-  sort(srt, srt + n);
-  for(int i = 1; i<=n; i++) arr[i] = 1 + lower_bound(srt, srt + n, arr[i]) - &arr[0];
+  sort(srt + 1, srt + n + 1);
+  for(int i = 1; i<=n; i++) arr[i] = lower_bound(srt + 1, srt + n + 1, arr[i]) - &srt[0];
   
   dfs(1, 0);
   
-  for(int i = 1; i<=n*2; i++) moo("%3d", trav[i]); puts("");
+  //for(int i = 1; i<=n*2; i++) moo("%3d", trav[i]); puts("");
 
   for(int i = 1; i<=n*2; i++){
     int u = trav[i];
@@ -82,12 +82,14 @@ int main(){
       if(occ[arr[u]]){
         U(occ[arr[u]], -1);
       }
-      U(i, 1);
-      occ[arr[u]] = i; 
+      U(L[u], 1);
+      occ[arr[u]] = L[u]; 
     }else{ //right side
       u = -u;
       ans[u] = S(R[u]) - S(L[u] - 1);
     }
+    //for(int k = 1; k<=n; k++) moo("%d %d\n", k, occ[k]);
+    //puts("\n");
   } 
   
   for(int i = 1; i<=n; i++){
