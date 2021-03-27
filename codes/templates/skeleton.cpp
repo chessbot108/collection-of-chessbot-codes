@@ -40,13 +40,13 @@ const int MX = 1e5 +10, int_max = 0x3f3f3f3f;
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 void setIO(const string& file_name){
-	freopen((file_name+".in").c_str(), "r", stdin);
-	freopen((file_name+".out").c_str(), "w+", stdout);
+    freopen((file_name+".in").c_str(), "r", stdin);
+    freopen((file_name+".out").c_str(), "w+", stdout);
 }
 
 int main(){
-  cin.tie(0) -> sync_with_stdio(0);
+    cin.tie(0) -> sync_with_stdio(0);
 
-	return 0;
+    return 0;
 }
 
