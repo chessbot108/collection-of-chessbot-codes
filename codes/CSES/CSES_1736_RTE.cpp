@@ -10,11 +10,11 @@
 #define LC(k) ((k << 1) + 1)
 #define RC(k) ((k + 1) << 1)
 using namespace std;
-const int RT = 450, max_v = RT * RT;
+const int RT = 450, max_v = RT * RT * 2;
 pii Q[RT];
 ll arr[max_v], start[max_v], pre[max_v], N[max_v];
 int n, q, ind = 0;
-ll adj[max_v][RT]; //.first is the endpoint, .second is the duration
+ll adj[max_v][RT + 10]; //.first is the endpoint, .second is the duration
 
 ll S(int L, int R, int qL, int qR){
   //the contribution an update from [L, R) has on
@@ -40,7 +40,7 @@ int main(){
       Q[ind++] = mp(a, b);
       start[a]++;
       adj[b][N[b]++] = b - a;
-      if(ind == 5){
+      if(ind == RT){
         ll cnt = 0ll, contr = 0ll;
         for(int i = 0; i<=n; i++){
           while(N[i]--){
@@ -60,7 +60,7 @@ int main(){
       for(int i = 0; i<ind; i++){
         ans += S(Q[i].first, Q[i].second, a, b);
       }
-      cout << ans << endl;
+      printf("%lld\n", ans);
     }
   }
 
