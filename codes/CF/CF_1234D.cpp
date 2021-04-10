@@ -11,7 +11,6 @@
 #include <random>
 #include <chrono>
 #include <queue>
-#include <set>
 #define cont continue
 
 #define pow2(n) (1 << (n))
@@ -36,7 +35,7 @@
 #define loom getline
 
 const ll mod = 1e9 + 7;
-const int MX = 1e5 +10, int_max = 0x3f3f3f3f;
+const int MX = 1e5 +10, sigma = 30, int_max = 0x3f3f3f3f;
 
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
@@ -45,28 +44,35 @@ void setIO(const string& file_name){
 	freopen((file_name+".out").c_str(), "w+", stdout);
 }
 
-multiset<int> p, len;
+int BIT[sigma][MX], n;
+char str[MX];
+
+int S(int k, int c, int val){ return tern(!k, val, S(k - lsb(k), c, val + BIT[c][k])); }
+void U(int k, int c, int val){ for(; k<=n; k+=lsb(k)) BIT[c][k] += val; }
 
 int main(){
   cin.tie(0) -> sync_with_stdio(0);
-  int q, x;
-  cin >> x >> q;
-  p.ins(0); p.ins(x);
-  len.ins(x);
+  oom("%s", str + 1);
+  n = strlen(str + 1);
+  int q; oom("%d", &q);
+  for(int i = 1; i<=n; i++) U(i, str[i] - 'a', 1);
   while(q--){
-    int a; cin >> a;
-    auto it = p.lower_bound(a);
-    auto it2 = it;
-    assert(it != p.begin() && it != p.end());
-    it--;
-    int l = *it, r = *it2;
-    assert(l < a && a < r);
-    len.erase(len.lower_bound(r - l));
-    len.ins(a - l); len.ins(r - a);
-    p.ins(a);
-    moo("%d ", *(--len.end()));
+    int op; oom("%d", &op);
+    if(op == 1){
+      int k; char s;
+      oom("%d %c", &k, &s);
+      U(k, str[k] - 'a', -1);
+      U(k, s - 'a', 1);
+      str[k] = s;
+    }else{
+      int tot = 0, l, r;
+      oom("%d%d", &l, &r);
+      for(int i = 0; i<sigma; i++){
+        if(S(r, i, 0) - S(l - 1, i, 0) > 0) tot++;
+      }
+      moo("%d\n", tot);
+    }
   }
-  mool;
 	return 0;
 }
 

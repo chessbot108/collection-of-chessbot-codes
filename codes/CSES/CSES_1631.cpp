@@ -11,7 +11,6 @@
 #include <random>
 #include <chrono>
 #include <queue>
-#include <set>
 #define cont continue
 
 #define pow2(n) (1 << (n))
@@ -36,7 +35,7 @@
 #define loom getline
 
 const ll mod = 1e9 + 7;
-const int MX = 1e5 +10, int_max = 0x3f3f3f3f;
+const int MX = 2e5 +10, int_max = 0x3f3f3f3f;
 
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
@@ -44,29 +43,21 @@ void setIO(const string& file_name){
 	freopen((file_name+".in").c_str(), "r", stdin);
 	freopen((file_name+".out").c_str(), "w+", stdout);
 }
-
-multiset<int> p, len;
-
+//cool problem :D. shame i read the sol on cf a while ago before i solved it so i lost the challenge
+int arr[MX], n;
 int main(){
   cin.tie(0) -> sync_with_stdio(0);
-  int q, x;
-  cin >> x >> q;
-  p.ins(0); p.ins(x);
-  len.ins(x);
-  while(q--){
-    int a; cin >> a;
-    auto it = p.lower_bound(a);
-    auto it2 = it;
-    assert(it != p.begin() && it != p.end());
-    it--;
-    int l = *it, r = *it2;
-    assert(l < a && a < r);
-    len.erase(len.lower_bound(r - l));
-    len.ins(a - l); len.ins(r - a);
-    p.ins(a);
-    moo("%d ", *(--len.end()));
+  cin >> n;
+  for(int i = 0; i<n; i++){
+    cin >> arr[i];
+  } 
+  sort(arr, arr + n);
+  ll x = arr[n - 1], tot = 0ll;
+  for(int i = 0; i<n - 1; i++){
+    tot += (ll) arr[i];
   }
-  mool;
+  moo("%lld\n", max(tot + x, x * 2ll));
+
 	return 0;
 }
 
