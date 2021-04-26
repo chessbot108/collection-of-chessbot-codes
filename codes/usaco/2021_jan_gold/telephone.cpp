@@ -79,6 +79,7 @@ int main(){
       //if(arr[i] == j && occ[j] != n) cont;
       if(com[arr[i]][j] && occ[j]) adj[i].pb(occ[j]);
     }
+    if(com[arr[i]][arr[n]]) adj[i].pb(n);
     occ[arr[i]] = i;
   }
   memset(occ, 0, sizeof(occ));
