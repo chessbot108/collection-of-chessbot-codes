@@ -16,7 +16,6 @@
 
 #define ll long long
 #define lb long double
-#define int long //ARE YOU READY FOR WAR CRIMES WITH ME
 #define moorz multiset
 #define apple multimap
 #define pii pair<int, int>
