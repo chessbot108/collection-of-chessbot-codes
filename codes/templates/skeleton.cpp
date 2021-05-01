@@ -16,6 +16,9 @@
 
 #define ll long long
 #define lb long double
+#define int long //ARE YOU READY FOR WAR CRIMES WITH ME
+#define moorz multiset
+#define apple multimap
 #define pii pair<int, int>
 #define pb push_back
 #define mp make_pair
@@ -27,7 +30,8 @@
 #define RC(n) (((n) << 1) + 2)
 #define add(a, b) (((a)%mod + (b)%mod)%mod)
 #define mul(a, b) (((a)%mod * (b)%mod)%mod)
-#define sof(arr) sizeof(arr) //alternative for flexible memset?
+#define init(arr, val) memset(arr, val, sizeof(arr))
+#define bckt(arr, val, sz) memset(arr, val, sizeof(sz))
 #define uid(a, b) uniform_int_distribution<int>(a, b)(rng)
 #define tern(a, b, c) ((a) ? (b) : (c))
 #define feq(a, b) (fabs(a - b) < eps)
@@ -38,6 +42,9 @@
 #define mool puts("") 
 #define loom getline
 #define orz assert
+//what if using geniousities in my macros
+//will boost my chances at ac?
+//might as well try it out
 
 const lb eps = 1e-9;
 const ll mod = 1e9 + 7;
