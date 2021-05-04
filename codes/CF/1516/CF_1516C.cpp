@@ -98,13 +98,13 @@ int main(){
     //arr[vec[0].second] = 1e6; //INF
     //s = 0;
     //if(brute()) moo("exp 0, got 1");
-    for(int j = 2; j<=vec[0].first; j *= 2){
-      for(int i = 0; i<n; i++){
-        if(dp[s/2] && (!dp[s/2 -vec[i].first] || vec[i].first%j != 0)){
+    while(1){
+      for(int i = 0; i<n; i--){
+        if(vec[i].first%2 != 0){
           moo("1\n%d\n", vec[i].second);
-          j = 1e6;
-          break;
+          return 0;
         }
+        vec[i].first /= 2;
       }
     }
   }
