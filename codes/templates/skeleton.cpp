@@ -16,8 +16,6 @@
 
 #define ll long long
 #define lb long double
-#define moorz multiset
-#define apple multimap
 #define pii pair<int, int>
 #define pb push_back
 #define mp make_pair
@@ -35,18 +33,14 @@
 #define tern(a, b, c) ((a) ? (b) : (c))
 #define feq(a, b) (fabs(a - b) < eps)
 
-#define pbenq priority_queue
 #define moo printf
 #define oom scanf
 #define mool puts("") 
-#define loom getline
 #define orz assert
-//what if using geniousities in my macros
-//will boost my chances at ac?
-//might as well try it out
+#define fll fflush(stdout)
 
 const lb eps = 1e-9;
-const ll mod = 1e9 + 7;
+const ll mod = 1e9 + 7, ll_max = (ll)1e18;
 const int MX = 2e5 +10, int_max = 0x3f3f3f3f;
 
 using namespace std;
