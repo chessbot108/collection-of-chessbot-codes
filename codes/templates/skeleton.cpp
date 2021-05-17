@@ -1,4 +1,4 @@
-//here take a cat
+//gyrating cat enthusiast
 #include <iostream>
 #include <cstdio>
 #include <cstring>
@@ -21,12 +21,10 @@
 #define mp make_pair
 #define ins insert
 #define cont continue
-#define pow2(n) (1 << (n))
+#define siz(vec) ((int)(vec.size()))
 
 #define LC(n) (((n) << 1) + 1)
 #define RC(n) (((n) << 1) + 2)
-#define add(a, b) (((a)%mod + (b)%mod)%mod)
-#define mul(a, b) (((a)%mod * (b)%mod)%mod)
 #define init(arr, val) memset(arr, val, sizeof(arr))
 #define bckt(arr, val, sz) memset(arr, val, sizeof(arr[0]) * (sz))
 #define uid(a, b) uniform_int_distribution<int>(a, b)(rng)
