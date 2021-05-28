@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <string>
 #include <utility>
-#include <cmath>
 #include <cassert>
 #include <algorithm>
 #include <vector>
@@ -26,10 +25,11 @@
 #define LC(n) (((n) << 1) + 1)
 #define RC(n) (((n) << 1) + 2)
 #define init(arr, val) memset(arr, val, sizeof(arr))
-#define bckt(arr, val, sz) memset(arr, val, sizeof(arr[0]) * (sz))
+#define bckt(arr, val, sz) memset(arr, val, sizeof(arr[0]) * (sz+5))
 #define uid(a, b) uniform_int_distribution<int>(a, b)(rng)
 #define tern(a, b, c) ((a) ? (b) : (c))
 #define feq(a, b) (fabs(a - b) < eps)
+#define abs(x) tern((x), x, -(x))
 
 #define moo printf
 #define oom scanf
