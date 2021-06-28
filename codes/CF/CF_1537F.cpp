@@ -1,11 +1,4 @@
-//i give up, will upsolve later
-
-
 //gyrating cat enthusiast
-//#pragma GCC optimize ("O3")
-//#pragma GCC target ("sse4")
-//does it help?
-
 #include <iostream>
 #include <cstdio>
 #include <cstring>
@@ -46,42 +39,60 @@
 
 const lb eps = 1e-9;
 const ll mod = 1e9 + 7, ll_max = (ll)1e18;
-const int MX = 3e5 +10, int_max = 0x3f3f3f3f;
+const int MX = 2e5 +10, int_max = 0x3f3f3f3f;
 
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int a[MX], c[MX], par[MX], super[MX][40];
+vector<int> adj[MX];
+ll vis[MX], tar[MX], val[MX];
+int n, m;
+
+int dfs(int u, int c){
+	if(vis[u]) return (vis[u] == c);
+	int ans = 1;
+	vis[u] = c;
+	for(int v : adj[u]){
+		ans &= dfs(v, 3-c);
+	}
+	return ans;
+}
 
 int main(){
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	cin.exceptions(cin.failbit);
-	int q;	
-	cin >> q >> a[0] >> c[0];
-	for(int i = 1; i<=q; i++){
-		int op; cin >> op;
-		if(op == 1){
-			cin >> par[i] >> a[i] >> c[i];
-			super[i][0] = par[i];
-			for(int j = 1; (1 << j) <= q; j++) super[i][j] = super[super[i][j-1]][j-1];
-		}else{
-			int u, w; cin >> u >> w;
-			ll weight = 0, cost = 0;
-			while(w > 0 && a[u] > 0){
-				int v = u;
-				for(int k = 20; ~k; k--){
-					if(a[super[v][k]] > 0){
-						v = super[v][k];
-					}
-				}
-				int t = min(w, a[v]);
-				a[v] -= t; w -= t;
-				weight += t;
-				cost += (ll)t * (ll)c[v];
+  cin.tie(0) -> sync_with_stdio(0);
+	int T; cin >> T;
+	while(T--){
+		cin >> n >> m;
+		bckt(vis, 0, n);
+		bckt(tar, 0, n);
+		bckt(val, 0, n);
+		for(int i = 0; i<=n; i++) adj[i].clear();
+		for(int i = 1; i<=n; i++) cin >> val[i];
+		for(int i = 1; i<=n; i++) cin >> tar[i];
+		for(int i = 0; i<m; i++){
+			int a, b; cin >> a >> b;
+			adj[a].pb(b);
+			adj[b].pb(a);
+		}
+		ll t1 = 0, t2 = 0;
+		for(int i = 1; i<=n; i++) t1 += tar[i], t2 += val[i];
+		if((t1-t2)%2){
+			cout << "NO\n"; cont;
+		}
+		int b = dfs(1, 1); t1 = t2 = 0;
+		if(b){
+			for(int i = 1; i<=n; i++){
+				//cerr << i << " " << vis[i] << " " << (tar[i] - val[i]) << endl;
+				if(vis[i] == 1) t1 += (tar[i] - val[i]);
+				else t2 += (tar[i] - val[i]);
 			}
-			cout << weight << " " << cost << endl;
+			//cerr << t1 << " " << t2 << endl;
+			(t1 == t2 && cout << "YES\n") || cout << "NO\n"; 
+		}else{
+			cout << "YES\n";
 		}
 	}
-	return 0;
+  return 0;
 }
+
+

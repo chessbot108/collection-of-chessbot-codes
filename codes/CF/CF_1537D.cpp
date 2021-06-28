@@ -1,11 +1,4 @@
-//i give up, will upsolve later
-
-
 //gyrating cat enthusiast
-//#pragma GCC optimize ("O3")
-//#pragma GCC target ("sse4")
-//does it help?
-
 #include <iostream>
 #include <cstdio>
 #include <cstring>
@@ -46,42 +39,27 @@
 
 const lb eps = 1e-9;
 const ll mod = 1e9 + 7, ll_max = (ll)1e18;
-const int MX = 3e5 +10, int_max = 0x3f3f3f3f;
+const int MX = 2e5 +10, int_max = 0x3f3f3f3f;
 
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int a[MX], c[MX], par[MX], super[MX][40];
-
 int main(){
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	cin.exceptions(cin.failbit);
-	int q;	
-	cin >> q >> a[0] >> c[0];
-	for(int i = 1; i<=q; i++){
-		int op; cin >> op;
-		if(op == 1){
-			cin >> par[i] >> a[i] >> c[i];
-			super[i][0] = par[i];
-			for(int j = 1; (1 << j) <= q; j++) super[i][j] = super[super[i][j-1]][j-1];
-		}else{
-			int u, w; cin >> u >> w;
-			ll weight = 0, cost = 0;
-			while(w > 0 && a[u] > 0){
-				int v = u;
-				for(int k = 20; ~k; k--){
-					if(a[super[v][k]] > 0){
-						v = super[v][k];
-					}
-				}
-				int t = min(w, a[v]);
-				a[v] -= t; w -= t;
-				weight += t;
-				cost += (ll)t * (ll)c[v];
-			}
-			cout << weight << " " << cost << endl;
+  cin.tie(0) -> sync_with_stdio(0);
+	int T; cin >> T;
+	while(T--){
+		int n; cin >> n;
+		if(n%2 == 1){
+			cout << "Bob\n"; cont;
 		}
+		int lg = 0;
+		while(n%2 == 0){
+			lg++; n /= 2;
+		}
+		if(n > 1) cout << "Alice\n";
+		else ((lg%2) && cout << "Bob\n") || cout << "Alice\n";
 	}
-	return 0;
+  return 0;
 }
+
+

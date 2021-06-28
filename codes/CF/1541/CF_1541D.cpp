@@ -38,96 +38,82 @@
 #define fll fflush(stdout)
 
 const lb eps = 1e-9;
-const ll mod = 1e9 + 7, MOD = 1e9 + 7, ll_max = (ll)1e18;
+const ll mod = 1e9 + 7, i2 = (mod+1)/2, ll_max = (ll)1e18;
 const int MX = 2e2 +10, int_max = 0x3f3f3f3f;
 
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
-//purple why speedforces :<
 
-//benq modint
-struct mi {
- 	int v; explicit operator int() const { return v; } 
-	mi() { v = 0; }
-	mi(ll _v):v(_v%MOD) { v += (v<0)*MOD; }
-};
-mi& operator+=(mi& a, mi b) { 
-	if ((a.v += b.v) >= MOD) a.v -= MOD; 
-	return a; }
-mi& operator-=(mi& a, mi b) { 
-	if ((a.v -= b.v) < 0) a.v += MOD; 
-	return a; }
-mi operator+(mi a, mi b) { return a += b; }
-mi operator-(mi a, mi b) { return a -= b; }
-mi operator*(mi a, mi b) { return mi((ll)a.v*b.v); }
-mi& operator*=(mi& a, mi b) { return a = a*b; }
-mi pow(mi a, ll p) { assert(p >= 0); // asserts are important! 
-	return p==0?1:pow(a*a,p/2)*(p&1?a:1); }
-mi inv(mi a) { assert(a.v != 0); return pow(a,MOD-2); }
-mi operator/(mi a, mi b) { return a*inv(b); }
-
-
-int n, sub[MX], dep[MX], par[MX];
+ll dp[MX][MX], lca[MX][MX];
+int dep[MX], par[MX], trav[MX], vis[MX];
 vector<int> adj[MX];
 
-mi dp[MX][MX], sz[MX], psum[MX], chi[MX];
-//probability i is reachable in j steps AND NO SOONER
-//expected number of nodes availible after i steps
-
-int dfs1(int u, int p){
-	dep[u] = dep[p] + 1;
-	par[u] = p;
-	for(int v : adj[u]){
-		if(v != p) sub[u] += dfs1(v, u);
-	}
-	return 1;
-}
-
-
-mi solve(int u){
-	init(dep, 0);
-	init(sub, 0);
-	dfs1(u, 0);
-	for(int i = 0; i<=n; i++){
-		for(int j = 0; j<=n; j++){
-			dp[i][j] = mi();
-		}
-	}
-	for(int i = 0; i<=n; i++) dp[u][i] = mi(1);
-	
-	for(int j = 1; j<=n; j++){
-		for(int i = 1; i<=n; i++){
-			sz[j] += dp[i][j-1]*chi[i];
-			chi[i] = mi();
-		}
-		for(int i = 1; i<=n; i++){
-			dp[i][j] = dp[par[i]][j-1]/sz[j];
-			if(i != u) chi[par[i]] += dp[i][j]/sub[par[i]];
-			if(i > u) psum[j] += dp[i][j];
-		}
-	}
-	mi ans(0);
-	for(int j = 1; j<=n; j++){
-		psum[j] += psum[j-1];
-		ans += psum[j];
+ll Pow(ll a, ll k){
+	ll ans = 1;
+	for(ll i = 1; i<=k; i*=2){
+		if(k&i) (ans *= a) %= mod;
+		(a *= a) %= mod;
 	}
 	return ans;
+}	
+
+void dfs(int u, int p){
+	dep[u] = dep[p]+1;
+	par[u] = p;
+	for(int v : adj[u]){
+		if(v != p) dfs(v, u);
+	}
+}
+
+int find(int x, int s){
+	if(!vis[x]){
+		lca[s][x] = find(par[x], s);
+		vis[x] = 1;
+	}	
+	return lca[s][x];
 }
 
 int main(){
   cin.tie(0) -> sync_with_stdio(0);
-	cin >> n;
-	for(int i = 1; i<n; i++){
+	int n; cin >> n;
+	for(int i = 0; i<n-1; i++){
 		int a, b; cin >> a >> b;
 		adj[a].pb(b);
 		adj[b].pb(a);
 	}
-
-	mi ans(0);
+	for(int i = 0; i<=n; i++) dp[0][i] = 1;
 	for(int i = 1; i<=n; i++){
-		ans += solve(i)/mi(n);
+		for(int j = 1; j<=n; j++){
+			(dp[i][j] = (dp[i-1][j]+dp[i][j-1])*i2) %= mod;
+		}
+	}	
+	ll tot = 0;
+	for(int i = 1; i<=n; i++){
+		dfs(i, 0);
+		for(int j = 1; j<=n; j++){
+			init(vis, 0);
+			for(int k = j; k; k = par[k]){
+				vis[k] = 1; lca[j][k] = k;
+			}
+			for(int k = 1; k<=n; k++){
+				if(!vis[k]) find(k, j);
+			}		
+		}	
+		//for(int j = 1; j<=n; j++){
+			//for(int k = 1; k<=n; k++){
+				//moo("%3d", lca[j][k]);
+			//} mool;
+		//}
+		for(int j = 1; j<=n; j++){
+			for(int k = j+1; k<=n; k++){
+				if(j == k) cont;
+				int l = lca[j][k], d = dep[l];
+				tot += dp[dep[k] - d][dep[j] - d];
+				tot %= mod;
+			}
+		}
 	}
-	moo("%lld\n", ans);
+	moo("%lld\n", (tot*Pow(n, mod-2))%mod);
   return 0;
 }
 
