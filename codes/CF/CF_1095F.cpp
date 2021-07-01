@@ -44,20 +44,47 @@ const int MX = 2e5 +10, int_max = 0x3f3f3f3f;
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+int par[MX];
+ll val[MX];
+vector<pair<ll, pii>> edges;
+
+int find(int x){
+	if(x != par[x]) par[x] = find(par[x]); return par[x]; 
+}
+void Union(int a, int b){
+	par[find(a)] = find(b);
+}
+
+bool cmp(const pair<ll, pii>& a, const pair<ll, pii>& b){
+	return a.first < b.first;
+}
+
 int main(){
-	cin.tie(0) -> sync_with_stdio(0);
-	int n; cin >> n;
-	multiset<int> ms;
+  cin.tie(0) -> sync_with_stdio(0);
+	int n, m;
+	cin >> n >> m;
+	for(int i = 1; i<=n; i++){
+		cin >> val[i]; par[i] = i;
+	}
+	int ind = min_element(val+1, val+n+1) - val;
+	for(int i = 1; i<=n; i++){
+		if(i != ind) edges.pb(mp(val[ind] + val[i], mp(i, ind)));
+	}
+	while(m--){
+		int a, b; ll c; cin >> a >> b >> c;
+		edges.pb(mp(c, mp(a, b)));
+	}
+	sort(edges.begin(), edges.end(), cmp);
 	ll tot = 0;
-	for(int i = 0; i<n; i++){
-		int a; cin >> a;
-		tot += a;
-		ms.ins(a);
-		if(tot < 0){
-			tot -= *ms.begin();
-			ms.erase(ms.begin());
+	for(auto it : edges){
+		int u = it.second.first, v = it.second.second;
+		if(find(u) != find(v)){
+			Union(u, v);
+			tot += it.first;
 		}
 	}
-	cout << siz(ms) << "\n";
-	return 0;
+	moo("%lld\n", tot);
+  return 0;
 }
+
+

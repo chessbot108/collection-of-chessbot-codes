@@ -44,20 +44,34 @@ const int MX = 2e5 +10, int_max = 0x3f3f3f3f;
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<pair<int, pii>> edges;
+int n, m, u, v, par[MX];
+
+int find(int x){ if(par[x] != x) par[x] = find(par[x]); return par[x]; }
+void Union(int a, int b){ par[find(b)] = find(a); }
+
 int main(){
-	cin.tie(0) -> sync_with_stdio(0);
-	int n; cin >> n;
-	multiset<int> ms;
-	ll tot = 0;
-	for(int i = 0; i<n; i++){
-		int a; cin >> a;
-		tot += a;
-		ms.ins(a);
-		if(tot < 0){
-			tot -= *ms.begin();
-			ms.erase(ms.begin());
+  cin.tie(0) -> sync_with_stdio(0);
+	cin >> n >> m;
+	for(int i = 0; i<m; i++){
+		int a, b, c; cin >> a >> b >> c;
+		if(!i) u = a, v = b;
+		else edges.pb(mp(c, mp(a, b)));
+	}
+	for(int i = 0; i<=n; i++) par[i] = i;
+	sort(edges.begin(), edges.end());
+	ll ans = 1e9;
+	for(const auto& e : edges){
+		int a = e.second.first, b = e.second.second;
+		if(find(a) != find(b)){
+			Union(a, b);
+		}		
+		if(find(u) == find(v)){
+			ans = min(ans, (ll)e.first);
 		}
 	}
-	cout << siz(ms) << "\n";
-	return 0;
+	moo("%lld\n", ans);
+  return 0;
 }
+
+

@@ -45,19 +45,20 @@ using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 int main(){
-	cin.tie(0) -> sync_with_stdio(0);
-	int n; cin >> n;
-	multiset<int> ms;
-	ll tot = 0;
+  cin.tie(0) -> sync_with_stdio(0);
+	int n, m, p;
+	cin >> n >> m >> p;
+	int a = n, b = m;
 	for(int i = 0; i<n; i++){
-		int a; cin >> a;
-		tot += a;
-		ms.ins(a);
-		if(tot < 0){
-			tot -= *ms.begin();
-			ms.erase(ms.begin());
-		}
+		int y; cin >> y;
+		if(y%p) a = min(a, i);
 	}
-	cout << siz(ms) << "\n";
-	return 0;
+	for(int j = 0; j<m; j++){
+		int y; cin >> y;
+		if(y%p) b = min(b, j);
+	}
+	cout << a + b << "\n";
+  return 0;
 }
+
+

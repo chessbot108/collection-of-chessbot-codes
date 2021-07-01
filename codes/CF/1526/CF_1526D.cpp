@@ -45,35 +45,51 @@ const int MX = 2e5 +10, int_max = 0x3f3f3f3f;
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-const char alph[] = {'A', 'T', 'O', 'N'};
+const char al[] = {'A', 'N', 'O', 'T'};
 
-char str[MX], ans[MX];
+char str[MX];
+char ans[4], temp[4];
 
-vector<int> adj[300];
+ll cnt[300], inv[300][300];
 
 int main(){
   cin.tie(0) -> sync_with_stdio(0);
-	int T; cin >> T;
+	int T; oom("%d", &T);
 	while(T--){
 		scanf("%s", str);
 		int n = strlen(str);
-		int N[300] = {};
-		bckt(ans, 0, n);
-		for(int i = 0; i<4; i++) adj[alph[i]].clear();
+		//init(cnt, 0);
 		for(int i = 0; i<n; i++){
-			adj[str[i]].pb(i);
-		}
-		for(int i = 0; i<n; i++){
-			char m; int d = 0;
-			for(int j = 0; j<4; j++){
-				if(!adj[alph[j]].empty() && abs(i - adj[alph[j]][N[i]])) > d){
-					m = alph[j], d =  abs(i - adj[alph[j]][N[i]]);
+			cnt[str[i]]++;
+		}	
+		//for(int i = 0; i<4; i++){
+			//cout << cnt[al[i]] << " ";
+		//} cout << endl;
+		for(int i = 0; i<4; i++){
+			int cur = 0;
+			for(int j = 0; j<n; j++){
+				inv[al[i]][str[j]] += cur;
+				if(str[j] == al[i]) cur++;
+			}
+		} //4-way inversion table
+		for(int i = 0; i<4; i++) ans[i] = al[i];
+		ll best = 0;
+		do{
+			ll tot = 0;
+			for(int i = 0; i<4; i++){
+				for(int j = i+1; j<4; j++){
+					tot += inv[ans[j]][ans[i]];
 				}
 			}
-			ans[i] = m;
-			adj[m].pop_front();
-		}
-		moo("%s\n", ans);
+			if(tot >= best){
+				best = tot;
+				for(int i = 0; i<4; i++) temp[i] = ans[i]; //rip i messed up the naming
+			}
+		}while(next_permutation(ans, ans + 4));
+		for(int i = 0; i<4; i++){
+			while(cnt[temp[i]]-- > 0) moo("%c", temp[i]);
+		} mool;
+		for(int i = 0; i<4; i++) for(int j = 0; j<4; j++) inv[al[i]][al[j]] = cnt[al[i]] = 0;
 	}
   return 0;
 }

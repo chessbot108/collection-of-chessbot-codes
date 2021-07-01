@@ -39,25 +39,30 @@
 
 const lb eps = 1e-9;
 const ll mod = 1e9 + 7, ll_max = (ll)1e18;
-const int MX = 2e5 +10, int_max = 0x3f3f3f3f;
+const int MX = 3e3 +10, int_max = 0x3f3f3f3f;
 
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+ll fac[MX];
+
+ll Pow(ll a, ll b){
+	ll ans = 1;
+	for(ll i = 1;  i<=b; i*=2ll){
+		if(b&i) (ans *= a) %= mod;
+		(a *= a) %= mod;
+	}
+	return ans;
+}
 
 int main(){
-	cin.tie(0) -> sync_with_stdio(0);
-	int n; cin >> n;
-	multiset<int> ms;
-	ll tot = 0;
-	for(int i = 0; i<n; i++){
-		int a; cin >> a;
-		tot += a;
-		ms.ins(a);
-		if(tot < 0){
-			tot -= *ms.begin();
-			ms.erase(ms.begin());
-		}
+  cin.tie(0) -> sync_with_stdio(0);
+	int a, b; fac[0] = 1;
+	cin >> a >> b;
+  for(int i = 1; i<=2e3; i++){
+		(fac[i] = fac[i-1]*i) %= mod;
 	}
-	cout << siz(ms) << "\n";
+	moo("%lld\n", (((Pow(fac[b+b], mod-2) * Pow(fac[a-1], mod-2)%mod) * fac[a + b +b -1])%mod));
 	return 0;
 }
+
+

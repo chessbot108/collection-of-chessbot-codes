@@ -39,25 +39,43 @@
 
 const lb eps = 1e-9;
 const ll mod = 1e9 + 7, ll_max = (ll)1e18;
-const int MX = 2e5 +10, int_max = 0x3f3f3f3f;
+const int MX = 3e5 +10, int_max = 0x3f3f3f3f;
 
 using namespace std;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int main(){
-	cin.tie(0) -> sync_with_stdio(0);
-	int n; cin >> n;
-	multiset<int> ms;
-	ll tot = 0;
-	for(int i = 0; i<n; i++){
-		int a; cin >> a;
-		tot += a;
-		ms.ins(a);
-		if(tot < 0){
-			tot -= *ms.begin();
-			ms.erase(ms.begin());
+int dp[MX], op[MX], n, k;
+vector<int> adj[MX];
+void dfs(int u, int p){
+	dp[u] = tern(op[u], int_max, 0);
+	
+	for(int v : adj[u]){
+		if(v == p) cont; 
+		dfs(v, u);
+		if(op[u]){ //you want the smallest
+			dp[u] = min(dp[u], dp[v]);
+		}else{ //find sum of children
+			dp[u] += dp[v];
 		}
 	}
-	cout << siz(ms) << "\n";
-	return 0;
+	if(adj[u].size() == 1 && u != 1){
+		dp[u] = 1; k++;
+	}
+	//moo("%d %d %d %d\n", u, dp[u], p, op[u]);
 }
+
+int main(){
+  cin.tie(0) -> sync_with_stdio(0);
+	cin >> n;
+	for(int i = 1; i<=n; i++) cin >> op[i];
+	for(int i = 2; i<=n; i++){
+		int a; cin >> a;
+		adj[a].pb(i);
+		adj[i].pb(a);
+	}
+	dfs(1, 0);
+	cout << k - (dp[1] - 1) << "\n";
+  return 0;
+}
+
+
